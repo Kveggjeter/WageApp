@@ -18,7 +18,8 @@ export function Salg() {
 
     function click(value: string) {
         setProdukt(value);
-        const saker: string[] | null = sak(produkt);
+        const saker: string[] | null = sak(value);
+        setSal(null);
         setSal(saker);
     }
 

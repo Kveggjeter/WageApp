@@ -57,15 +57,36 @@ p:hover {
 .produktBox {
         display: flex;
         position: absolute;
-        flex-direction: row;
+        flex-direction: column;
         left: 50%;
         right: 50%;
         top: 50%;
         bottom: 50%;
         transform: translate(-50%, -50%);
         height: 500px;
-        width: 350px;
+        width: 340px;
         background-color: white;
         border: 1px solid black;
         z-index: 11000;
+        gap: 15px;
+        padding: 20px 20px 0;
 }
+
+
+.produktBox a {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 250;
+    border-bottom: 1px lightgray solid;
+}
+
+.prodClust {
+    display: flex;
+    gap: 10;
+}
+
+.prodInput {
+    display: flex;
+    margin-left: auto;
+    justify-self: flex-start;
+}
+

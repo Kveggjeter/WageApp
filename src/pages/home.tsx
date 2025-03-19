@@ -8,7 +8,7 @@ export function Home() {
 
     return (
         <>
-            <Salg/>
+        <Salg/>
             {userLoggedIn ? <Dash /> : <Login />}
         </>
     );
