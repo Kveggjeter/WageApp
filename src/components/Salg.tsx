@@ -8,9 +8,18 @@ import annet from "../assets/images/nliprivat_24.gif";
 import nordea from "../assets/images/nordealogo_24.gif";
 import reise from "../assets/images/reise_24.gif";
 import Produkter from "./Produkter.tsx";
+import {useState} from "react";
+import {sak} from "../sak.ts";
 
 
 export function Salg() {
+    const [produkt, setProdukt] = useState("");
+
+    function click(value: string) {
+        setProdukt(value);
+        sak(produkt);
+    }
+
 
     return (
         <>
@@ -22,25 +31,25 @@ export function Salg() {
                         <p>Hus og innbo</p>
                     </li><li>
                         <img src={bil} alt="bil"/>
-                        <p>Kjøretøy</p>
+                        <p onClick={() => click("bil")}>Kjøretøy</p>
                     </li><li>
                         <img src={person} alt="person"/>
-                        <p>Barn og voksne</p>
+                        <p onClick={() => click("person")}>Barn og voksne</p>
                     </li><li>
                         <img src={nordea} alt="nordea"/>
-                        <p>Nordea</p>
+                        <p onClick={() => click("nordea")}>Nordea</p>
                     </li><li>
                         <img src={baat} alt="båt"/>
-                        <p>Båt</p>
+                        <p onClick={() => click("baat")}>Båt</p>
                     </li><li>
                         <img src={reise} alt="reise"/>
-                        <p>Reise</p>
+                        <p onClick={() => click("reise")}>Reise</p>
                     </li><li>
                         <img src={dyr} alt="dyr"/>
-                        <p>Dyr</p>
+                        <p onClick={() => click("dyr")}>Dyr</p>
                     </li><li>
                         <img src={annet} alt="annet"/>
-                        <p>Annet</p>
+                        <p onClick={() => click("annet")}>Annet</p>
                     </li>
                 </ul>
                 <table className="salgTable">
