@@ -129,9 +129,10 @@
 #dateNow {
     font-size: 26px;
     width: 150px;
-    padding-top: 10px;
+    padding-top: 15px;
     padding-bottom: 3px;
     border-bottom: 2px lightgray solid;
+    margin-bottom: 10px;
 }
 
 /* Table */
@@ -184,6 +185,11 @@ th {
 
 /* Mid */
 
+h2 {
+    margin: 0;
+    padding: 0;
+}
+
 .miDash {
     display: flex;
     flex-direction: column;
@@ -192,7 +198,84 @@ th {
     width: 100%;
 }
 
+.factBox h3 {
+    font-family: 'Albert Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 300;
+}
 
+.factBox h2 {
+    font-size: 32px;
+    font-weight: 500;
+    border-bottom: 2px #c3c1c1 solid;
+}
+
+.factBox {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    margin-left: auto;
+    margin-top: 30px;
+    border: 2px lightgray dotted;
+    border-radius: 3px;
+}
+
+.hpBonus {
+    border-right: 2px lightgray dotted;
+}
+
+.hpBonus, .sgNor {
+    width: 200px;
+    padding: 10px;
+}
+
+/* Sales buttons */
+
+.btnBulk {
+    display: flex;
+    gap: 40px;
+    margin: auto 0 30px auto;
+}
+
+.bb {
+    font-family: 'Albert Sans', sans-serif;
+    border: none;
+    border-radius: 7px;
+}
+
+#removeSale {
+    margin-top: auto;
+    width: 150px;
+    height: 40px;
+    color: white;
+    font-style: oblique;
+    font-size: 18px;
+    font-weight: 200;
+    background-color: #950808;
+    transition: 0.5s;
+}
+
+#addSale {
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: 300;
+    color: white;
+    background-color: #158a06;
+    transition: 0.5s;
+}
+
+#addSale:hover {
+    cursor: pointer;
+    background-color: #26ba0e;
+    transition: 0.5s;
+}
+
+#removeSale:hover {
+    cursor: pointer;
+    background-color: #450303;
+    transition: 0.5s;
+}
 
 /* Right */
 
@@ -272,3 +355,29 @@ h3, h1 {
     border-bottom: 5px black solid;
 }
 
+/* Logg ut */
+
+#logout {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    border: none;
+    width: 150px;
+    height: 40px;
+    font-size: 20px;
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: 0.7s;
+}
+
+#logout:hover {
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #950808;
+    color: white;
+    transition: 0.5s;
+    transform: scale(1.01);
+}

@@ -1,6 +1,10 @@
 import "../assets/dash.css"
+import {doSignOut} from "../firebase/auth.ts";
+import {useNavigate} from "react-router-dom";
 
 export function Dash() {
+    const navigate = useNavigate();
+
     return (
         <>
             <div className="cont">
@@ -108,13 +112,19 @@ export function Dash() {
                             </table>
                         </div>
                         <div className="miDash">
-                            <div className="hpBonus">
-                                <h2 id="hpBonus">HP bonus</h2>
-                                <h2 id="bonusNum">17/23</h2>
+                            <div className="factBox">
+                                <div className="hpBonus">
+                                    <h3 id="hpBonus">HP bonus</h3>
+                                    <h2 id="bonusNum">17/23</h2>
+                                </div>
+                                <div className="sgNor">
+                                    <h3 id="sgNor">Salgsum Nordea</h3>
+                                    <h2 id="sgNum">78 032NOK</h2>
+                                </div>
                             </div>
-                            <div className="sgNor">
-                                <h2 id="sgNor">Salgsum Nordea</h2>
-                                <h2 id="sgNum">78 032NOK</h2>
+                            <div className="btnBulk">
+                                <button className="bb" id="addSale">Legg til salg</button>
+                                <button className="bb" id="removeSale">Fjern salg</button>
                             </div>
                         </div>
                         <div className="rightDash">
@@ -142,6 +152,12 @@ export function Dash() {
                             </div>
                         </div>
                     </div>
+                <button id="logout"
+                        onClick={() => {
+                            doSignOut().then(() => {
+                                navigate('/')
+                            })
+                        }}>Logg ut</button>
             </div>
         </>
     )

@@ -70,6 +70,11 @@ h2 {
     font-weight: 300;
 }
 
+#login {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
 /* Input */
 
 .inputField {
@@ -108,10 +113,14 @@ h2 {
     font-weight: 300;
     color: white;
     background-color: #3271ef;
+    transition: 0.5s;
 }
 
 .btn:hover {
     cursor: pointer;
+    background-color: #1557ef;
+    transition: 0.5s;
+    transform: scale(1.01);
 }
 
 /* Signin */
@@ -119,8 +128,16 @@ h2 {
 .signinBox {
     margin-top: auto;
     text-align: center;
+    padding-top: 20px;
+    height: 50px;
     width: 100%;
     background-color: #f3f2f2;
+    transition: 0.7s;
+}
+
+.signinBox:hover {
+    background-color: lightgray;
+    transition: 0.5s;
 }
 
 #signin {
