@@ -1,0 +1,71 @@
+.salgBox {
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    left: 50%;
+    right: 50%;
+    top: 50%;
+    bottom: 50%;
+    transform: translate(-50%, -50%);
+    height: 600px;
+    width: 800px;
+    background-color: white;
+    border: 1px solid black;
+    z-index: 1000;
+}
+
+/* Liste */
+
+.imgBulk {
+    padding-top: 10px;
+    padding-left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.imgBulk img {
+    width: 24px;
+    height: 24px;
+}
+
+li {
+    font-family: 'Albert Sans', sans-serif;
+    font-weight: 250;
+    align-items: center;
+    gap: 0.5rem;
+    list-style-type: none;
+    display: flex;
+    flex-direction: row;
+}
+
+p:hover {
+    cursor: pointer;
+    color: #158a06;
+}
+
+/* Tabell */
+
+.salgTable {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+/* Produkter */
+
+.produktBox {
+        display: flex;
+        position: absolute;
+        flex-direction: row;
+        left: 50%;
+        right: 50%;
+        top: 50%;
+        bottom: 50%;
+        transform: translate(-50%, -50%);
+        height: 500px;
+        width: 350px;
+        background-color: white;
+        border: 1px solid black;
+        z-index: 11000;
+}
