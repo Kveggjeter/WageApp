@@ -1,22 +1,29 @@
+const h: string[] =  [ "Hus", "Hytte", "UDF Hus", "Innbo", "Innbo Gruppe", "Tilleg til innbo", "Verdigjenstand"];
+const b: string[] = [ "Bil", "UDF Bil", "Bobil", "MC", "Moped", "Campingvogn/tilhenger", "Snøscooter", "Veteran", "Gårdsbil", "Lastebil", "Traktor/arbeidsmaskin", "Traktor og andre", "Ellsparkesykkel" ];
+const p: string[] = [ "Barn", "Ulykke", "Behandling", "Kritisk sykdom", "OBOS person", "NITO person" ];
+const n: string[] = [ "Liv" ]
+const r: string[] = [ "Reise", "Reise kollektiv", "Utvidet reise" ];
+const d: string[] = [ "Dyr" ];
+const a: string[] = [ "Huseier bolig", "Engangstransport" ];
 
 export function sak(s: string) {
     switch (s) {
         case "hus":
-            return;
-            case "bil":
-                return;
+                return h;
+                case "bil":
+                return b;
         case "person":
-                    return;
+                    return p;
         case "nordea":
-                return;
+                return n;
         case "baat":
-            return;
+            return b;
         case "reise":
-            return;
+            return r;
         case "dyr":
-            return;
+            return d;
         case "annet":
-            return;
+            return a
         default:
             return null;
     }

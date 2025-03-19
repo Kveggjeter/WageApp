@@ -14,21 +14,22 @@ import {sak} from "../sak.ts";
 
 export function Salg() {
     const [produkt, setProdukt] = useState("");
+    const [sal, setSal] = useState<string[] | null>(null);
 
     function click(value: string) {
         setProdukt(value);
-        sak(produkt);
+        const saker: string[] | null = sak(produkt);
+        setSal(saker);
     }
-
 
     return (
         <>
-            <Produkter/>
+            <Produkter sal={sal} setSal={setSal} />
             <div className="salgBox">
                 <ul className="imgBulk">
                     <li>
                         <img src={hus} alt="hus"/>
-                        <p>Hus og innbo</p>
+                        <p onClick={() => click("hus")}>Hus og innbo</p>
                     </li><li>
                         <img src={bil} alt="bil"/>
                         <p onClick={() => click("bil")}>Kjøretøy</p>
