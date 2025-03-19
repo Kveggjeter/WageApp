@@ -1,12 +1,16 @@
+import { useState } from "react";
 import "../assets/dash.css"
 import {doSignOut} from "../firebase/auth.ts";
 import {useNavigate} from "react-router-dom";
+import { Salg } from "../components/Salg.tsx";
 
 export function Dash() {
     const navigate = useNavigate();
-
+    const [showSalg, setShowSalg] = useState(false);
+    
     return (
         <>
+        <Salg showSalg={showSalg} closeSalg={() => setShowSalg(false)} children={undefined}/>
             <div className="cont">
                 <div className="monthPicker">
                     <div className="dropdown">
@@ -123,7 +127,11 @@ export function Dash() {
                                 </div>
                             </div>
                             <div className="btnBulk">
-                                <button className="bb" id="addSale">Legg til salg</button>
+                                <button
+                                    className="bb" 
+                                    id="addSale"
+                                    onClick={()=>setShowSalg(true)}
+                                    >Legg til salg</button>
                                 <button className="bb" id="removeSale">Fjern salg</button>
                             </div>
                         </div>

@@ -14,6 +14,22 @@
     z-index: 1000;
 }
 
+.lukk {
+    width: 30px;
+    height: 30px;
+    font-size: 26px;
+    margin: 2px 2px auto;
+    border: none;
+    transition: 0.7s;
+    background-color: #950808;
+}
+
+.lukk:hover {
+    
+    transition: 0.5s;
+    color: white;
+}
+
 /* Liste */
 
 .imgBulk {
@@ -63,30 +79,57 @@ p:hover {
         top: 50%;
         bottom: 50%;
         transform: translate(-50%, -50%);
-        height: 500px;
+        height: 580px;
         width: 340px;
         background-color: white;
-        border: 1px solid black;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         z-index: 11000;
-        gap: 15px;
         padding: 20px 20px 0;
+        gap: 15px;
 }
 
+.he {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px lightgray dotted;
+}
 
 .produktBox a {
     font-family: 'Albert Sans', sans-serif;
     font-weight: 250;
-    border-bottom: 1px lightgray solid;
-}
-
-.prodClust {
-    display: flex;
-    gap: 10;
 }
 
 .prodInput {
+    text-align: center;
+    height: 20px;
+    width: 20px;
     display: flex;
     margin-left: auto;
-    justify-self: flex-start;
+    border: 1px black solid;
+}
+
+.prodInput::placeholder {
+    font-size: 12px;
+    text-align: center;
+}
+
+.prodInput::-webkit-outer-spin-button,
+.prodInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.braKnapp {
+    border: none;
+    height: 30px;
+    width: 60%;
+    align-self: center;
+    transition: 0.7s;
+}
+
+.braKnapp:hover {
+    cursor: pointer;
+    background-color: lightgray;
+    transition: 0.5s;
 }
 

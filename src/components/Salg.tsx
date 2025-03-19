@@ -10,22 +10,26 @@ import reise from "../assets/images/reise_24.gif";
 import Produkter from "./Produkter.tsx";
 import {useState} from "react";
 import {sak} from "../sak.ts";
+import { SalgProp } from "../assets/type/SalgProp.ts";
 
 
-export function Salg() {
+export function Salg({ showSalg, closeSalg, children }: SalgProp) {
+    if (!showSalg) {return null}
     const [produkt, setProdukt] = useState("");
     const [sal, setSal] = useState<string[] | null>(null);
+    const [showProd, setShowProd] = useState(false);
 
     function click(value: string) {
         setProdukt(value);
         const saker: string[] | null = sak(value);
         setSal(null);
         setSal(saker);
+        setShowProd(true);
     }
 
     return (
         <>
-            <Produkter sal={sal} setSal={setSal} />
+            <Produkter sal={sal} showProd={showProd} closeProd={() => setShowProd(false)} children={undefined}/>
             <div className="salgBox">
                 <ul className="imgBulk">
                     <li>
@@ -60,6 +64,8 @@ export function Salg() {
                         <th>Ekstra?</th>
                     </tr>
                 </table>
+                {children}
+                <button className="lukk" onClick={closeSalg}>X</button>
             </div>
         </>
     )

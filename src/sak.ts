@@ -1,5 +1,5 @@
-const h: string[] =  [ "Hus", "Hytte", "UDF Hus", "Innbo", "Innbo Gruppe", "Tilleg til innbo", "Verdigjenstand"];
-const b: string[] = [ "Bil", "UDF Bil", "Bobil", "MC", "Moped", "Campingvogn/tilhenger", "Snøscooter", "Veteran", "Gårdsbil", "Lastebil", "Traktor/arbeidsmaskin", "Traktor og andre", "Ellsparkesykkel" ];
+const h: string[] = [ "Hus", "UDF Hus", "Hytte", "Råte og skadedyr", "Innbo", "Innbo Gruppe", "Tillegg til innbo", "Verdigjenstand" ];
+const b: string[] = [ "Bil", "UDF Bil", "Bobil", "MC", "Moped", "Campingvogn/tilhenger", "Snøscooter", "Veteran", "Gårdsbil", "Lastebil", "Traktor/arbeidsmaskin", "Traktor og andre", "Elsparkesykkel" ];
 const p: string[] = [ "Barn", "Ulykke", "Behandling", "Kritisk sykdom", "OBOS person", "NITO person" ];
 const n: string[] = [ "Liv" ]
 const r: string[] = [ "Reise", "Reise kollektiv", "Utvidet reise" ];
