@@ -11,20 +11,37 @@ import Produkter from "./Produkter.tsx";
 import {useState} from "react";
 import {sak} from "../sak.ts";
 import { SalgProp } from "../assets/type/SalgProp.ts";
+import {useProdex} from "../contexts/productContext/Prodex.tsx";
+import TableComp from "./TableComp.tsx";
+import {RowData} from "../assets/type/TableProp.ts";
+import {useSales} from "../contexts/productContext/SalesContext.tsx";
 
 
 export function Salg({ showSalg, closeSalg, children }: SalgProp) {
-    if (!showSalg) {return null}
-    const [produkt, setProdukt] = useState("");
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
+    const { inputs } = useProdex();
+    const { setSales } = useSales();
+    const [rows, setRows] = useState<RowData[]>([]);
+
+    if (!showSalg) {return null}
 
     function click(value: string) {
-        setProdukt(value);
         const saker: string[] | null = sak(value);
         setSal(null);
         setSal(saker);
         setShowProd(true);
+    }
+
+    function handleRegister() {
+        console.log("inputs:", inputs);
+        console.log("rows:", rows);
+        const combined = rows.map((r) => ({
+            ...r,
+            count: inputs[r.product] ?? 0,
+        }));
+        setSales(combined);
+        console.log("combined:", combined);
     }
 
     return (
@@ -58,12 +75,10 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                         <p onClick={() => click("annet")}>Annet</p>
                     </li>
                 </ul>
-                <table className="salgTable">
-                    <tr id="salgHead">
-                        <th>Nysalg?</th>
-                        <th>Ekstra?</th>
-                    </tr>
-                </table>
+                <div className="tableBulk">
+                    <TableComp data={inputs} rows={rows} setRows={setRows}/>
+                </div>
+                <button className="sellbby" onClick={handleRegister}>Registrer</button>
                 {children}
                 <button className="lukk" onClick={closeSalg}>X</button>
             </div>

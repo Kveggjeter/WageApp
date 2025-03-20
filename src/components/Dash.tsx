@@ -3,14 +3,16 @@ import "../assets/dash.css"
 import {doSignOut} from "../firebase/auth.ts";
 import {useNavigate} from "react-router-dom";
 import { Salg } from "../components/Salg.tsx";
+import {useProdex} from "../contexts/productContext/Prodex.tsx";
 
 export function Dash() {
+    const {setInputs} = useProdex();
     const navigate = useNavigate();
     const [showSalg, setShowSalg] = useState(false);
     
     return (
         <>
-        <Salg showSalg={showSalg} closeSalg={() => setShowSalg(false)} children={undefined}/>
+        <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}) } } children={undefined}/>
             <div className="cont">
                 <div className="monthPicker">
                     <div className="dropdown">

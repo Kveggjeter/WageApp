@@ -1,16 +1,19 @@
-import { useState } from "react";
 import { ProdProps } from "../assets/type/ProdProps";
+import { useProdex } from "../contexts/productContext/Prodex.tsx";
+import {useState} from "react";
 
 // Huske dette med map til neste gang, vanskelig å bli klok på
 export function Produkter({sal, showProd, closeProd, children }: ProdProps) {
+    const { setInputs } = useProdex();
+    const [formData, setFormData] = useState<{ [key: string]: number }>({});
+
     if (!showProd) { return null }
-    const [inputs, setInputs] = useState<{ [key: string]: string | number }>({});
     
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = event.target;
         const numericValue = parseInt(value, 10);
         const safeValue = isNaN(numericValue) ? 0 : Math.max(0, numericValue);
-        setInputs((prev) => ({
+        setFormData((prev) => ({
           ...prev,
           [id]: safeValue,
         }));
@@ -18,7 +21,12 @@ export function Produkter({sal, showProd, closeProd, children }: ProdProps) {
 
       const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        console.log(inputs);
+          setInputs((prev) => ({
+              ...prev,
+              ...formData,
+          }));
+        closeProd();
+
       };
 
       const handleWheel = (event: React.WheelEvent<HTMLInputElement>) => {
@@ -40,13 +48,15 @@ export function Produkter({sal, showProd, closeProd, children }: ProdProps) {
                         placeholder="0"
                         min={0}
                         onWheel={handleWheel} 
-                        value={inputs[value] ?? ""} 
+                        value={formData[value] ?? ""}
                         onChange={handleChange}
                     />
                 </span>
             ))}
-            <button type="submit" className="braKnapp">OK</button>
-            <button className="greiKnapp" onClick={closeProd}>X</button>
+            <div className="btnCluster">
+                <button type="submit" className="braKnapp">OK</button>
+                <button className="greiKnapp" onClick={closeProd}>Avbryt</button>
+            </div>
             {children}
         </form>
     );

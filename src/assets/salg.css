@@ -15,10 +15,12 @@
 }
 
 .lukk {
+    position: absolute;
     width: 30px;
     height: 30px;
     font-size: 26px;
-    margin: 2px 2px auto;
+    margin: 1px;
+    right: 0;
     border: none;
     transition: 0.7s;
     background-color: #950808;
@@ -62,10 +64,52 @@ p:hover {
 
 /* Tabell */
 
-.salgTable {
+.tableBulk {
+    font-family: 'Albert Sans', sans-serif;
     display: flex;
     flex-direction: column;
-    margin: auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: 30px 0 30px 50px;
+}
+
+.tableBulk th {
+    border: none;
+    background-color: lightgray;
+}
+
+.tableBulk table {
+    border-collapse: collapse;
+}
+
+.tableBulk td {
+    padding-top: 10px;
+}
+
+.sellbby {
+    margin-top: auto;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    width: 130px;
+    height: 37px;
+    font-size: 20px;
+    font-weight: 300;
+    color: white;
+    background-color: #158a06;
+    transition: 0.5s;
+}
+
+.sellbby:hover {
+    cursor: pointer;
+    background-color: #26ba0e;
+    transition: 0.5s;
+}
+
+td input {
+    display: flex;
+    justify-self: center;
 }
 
 /* Produkter */
@@ -80,7 +124,7 @@ p:hover {
         bottom: 50%;
         transform: translate(-50%, -50%);
         height: 580px;
-        width: 340px;
+        width: 350px;
         background-color: white;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         z-index: 11000;
@@ -119,6 +163,12 @@ p:hover {
   margin: 0;
 }
 
+.btnCluster {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
 .braKnapp {
     border: none;
     height: 30px;
@@ -128,6 +178,20 @@ p:hover {
 }
 
 .braKnapp:hover {
+    cursor: pointer;
+    background-color: lightgray;
+    transition: 0.5s;
+}
+
+.greiKnapp {
+    border: none;
+    height: 30px;
+    width: 30%;
+    align-self: center;
+    transition: 0.7s;
+}
+
+.greiKnapp:hover {
     cursor: pointer;
     background-color: lightgray;
     transition: 0.5s;
