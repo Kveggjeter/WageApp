@@ -15,13 +15,14 @@ import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import TableComp from "./TableComp.tsx";
 import {RowData} from "../assets/type/TableProp.ts";
 import {useSales} from "../contexts/productContext/SalesContext.tsx";
+import {AddCommision, GetCommision} from "../firebase/firestore.ts";
 
 
 export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
     const { inputs } = useProdex();
-    const { setSales } = useSales();
+    const { sales, setSales } = useSales();
     const [rows, setRows] = useState<RowData[]>([]);
 
     if (!showSalg) {return null}
@@ -41,6 +42,8 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
             count: inputs[r.product] ?? 0,
         }));
         setSales(combined);
+        GetCommision();
+        AddCommision();
         console.log("combined:", combined);
     }
 
