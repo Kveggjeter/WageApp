@@ -9,42 +9,55 @@ import nordea from "../assets/images/nordealogo_24.gif";
 import reise from "../assets/images/reise_24.gif";
 import Produkter from "./Produkter.tsx";
 import {useState} from "react";
-import {sak} from "../sak.ts";
+import Sak from "../feature/sak.ts";
 import { SalgProp } from "../assets/type/SalgProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import TableComp from "./TableComp.tsx";
 import {RowData} from "../assets/type/TableProp.ts";
 import {useSales} from "../contexts/productContext/SalesContext.tsx";
 import {AddCommision, GetCommision} from "../firebase/firestore.ts";
-
+import {UniqueAdd} from "../feature/UniqueAdd.tsx";
+import MapUnique from "../feature/MapUnique.ts";
 
 export function Salg({ showSalg, closeSalg, children }: SalgProp) {
+    const {sales, setSales} = useSales();
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
     const { inputs } = useProdex();
-    const { sales, setSales } = useSales();
     const [rows, setRows] = useState<RowData[]>([]);
 
     if (!showSalg) {return null}
 
     function click(value: string) {
-        const saker: string[] | null = sak(value);
+        const sak = new Sak();
+        const saker: string[] | null = sak.sak(value);
         setSal(null);
         setSal(saker);
         setShowProd(true);
     }
 
     function handleRegister() {
+        const uni = new MapUnique();
         console.log("inputs:", inputs);
         console.log("rows:", rows);
         const combined = rows.map((r) => ({
             ...r,
-            count: inputs[r.product] ?? 0,
         }));
-        setSales(combined);
+
         GetCommision();
-        AddCommision();
-        console.log("combined:", combined);
+        const res = UniqueAdd(combined);
+        const produkt: Map<string, number> = res.produkt;
+        const mersalg: Map<string, number> = res.mersalg;
+        uni.navn(produkt, true)
+
+
+        setSales((prevSales) => [
+            ...prevSales,
+            {
+                produkt: Array.from(produkt),
+                ekstra: Array.from(mersalg),
+            },
+        ]);
     }
 
     return (

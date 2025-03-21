@@ -4,5 +4,4 @@ export interface SaleProp {
     mersalg: boolean;
     ekstra: boolean;
     maskinskade: boolean;
-    count: number | string;
 }

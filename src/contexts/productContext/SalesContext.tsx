@@ -1,6 +1,5 @@
 import {SalesContextProps} from "../../assets/type/SalesContextProps.ts";
 import {createContext, useContext, useState} from "react";
-import {SaleProp} from "../../assets/type/SaleProp.ts";
 
 const SalgContext = createContext<SalesContextProps>({
     sales: [],
@@ -8,7 +7,7 @@ const SalgContext = createContext<SalesContextProps>({
 })
 
 export function SalesProvider({ children }: { children: React.ReactNode }) {
-    const [sales, setSales] = useState<SaleProp[]>([]);
+    const [sales, setSales] = useState<{ produkt: [string, number][], mersalg: [string, number][] }[]>([]);
 
     return (
         <SalgContext.Provider value={{ sales, setSales }}>
