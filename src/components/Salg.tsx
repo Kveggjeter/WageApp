@@ -36,6 +36,14 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         setShowProd(true);
     }
 
+    function nullCheck(hm: Map<string, number>) {
+        let stat: boolean = false;
+        hm.forEach((value) => {
+            if (value > 0) stat = true;
+        });
+        return stat;
+    }
+
     function handleRegister() {
         const uni = new MapUnique();
         console.log("inputs:", inputs);
@@ -48,16 +56,26 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         const res = UniqueAdd(combined);
         const produkt: Map<string, number> = res.produkt;
         const mersalg: Map<string, number> = res.mersalg;
+        let salgsKart: Map<string, number>;
         uni.navn(produkt, true)
-
+        uni.navn(mersalg, false)
+        if (nullCheck(produkt) && nullCheck(mersalg))
+            salgsKart = new Map([...produkt, ...mersalg])
+        else if (nullCheck(produkt) && !nullCheck(mersalg))
+            salgsKart = produkt;
+        else if (!nullCheck(produkt) && nullCheck(mersalg))
+            salgsKart = mersalg;
 
         setSales((prevSales) => [
             ...prevSales,
             {
-                produkt: Array.from(produkt),
-                ekstra: Array.from(mersalg),
+                salgsKart: Array.from(salgsKart),
             },
         ]);
+        salgsKart.forEach((key, value) => {
+            console.log("Prod: " + key + " verdi: " + value)
+        });
+        
     }
 
     return (

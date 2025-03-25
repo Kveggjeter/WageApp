@@ -17,8 +17,12 @@ export class NamesForProduct {
     hpv: string [] = ["Hus"];
     hp1: string [] = ["Bil kasko"];
     hp2: string [] = ["Bil ansvar/delkasko"];
+    udf_hpv: string [] = ["UDF Hus"];
+    udf_hp1: string [] = ["UDF Bil kasko"];
+    udf_hp2: string [] = ["UDF Bil ansvar/delkasko"];
     hpp: string [] = ["Barn", "Behandling", "Kritisk sykdom"];
     liv: string [] = ["Nordea"];
     sector: string [] = ["Sector"];
+    ekstra: string [] = ["ekstra"];
 
 }
