@@ -1,5 +1,5 @@
 export interface SalesContextProps {
-    sales: { salgsKart: [string, number][] }; 
+    sales: { produkt: [string, number][], mersalg: [string, number][]  }; 
     setSales: (sales: (prevSales: any) => any[]) => void;
 }
 

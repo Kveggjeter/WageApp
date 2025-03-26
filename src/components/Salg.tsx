@@ -15,9 +15,12 @@ import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import TableComp from "./TableComp.tsx";
 import {RowData} from "../assets/type/TableProp.ts";
 import {useSales} from "../contexts/productContext/SalesContext.tsx";
-import {AddCommision, GetCommision} from "../firebase/firestore.ts";
+import {AddCommision, GetCommision, GetWages} from "../firebase/firestore.ts";
 import {UniqueAdd} from "../feature/UniqueAdd.tsx";
 import MapUnique from "../feature/MapUnique.ts";
+import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
+import {useAuth} from "../contexts/authContext";
+
 
 export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const {sales, setSales} = useSales();
@@ -25,6 +28,9 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const [showProd, setShowProd] = useState(false);
     const { inputs } = useProdex();
     const [rows, setRows] = useState<RowData[]>([]);
+    const { year } = UseYear();
+    const { month } = UseMonth();
+    const { uid } = useAuth();
 
     if (!showSalg) {return null}
 
@@ -56,26 +62,23 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         const res = UniqueAdd(combined);
         const produkt: Map<string, number> = res.produkt;
         const mersalg: Map<string, number> = res.mersalg;
-        let salgsKart: Map<string, number>;
         uni.navn(produkt, true)
         uni.navn(mersalg, false)
-        if (nullCheck(produkt) && nullCheck(mersalg))
-            salgsKart = new Map([...produkt, ...mersalg])
-        else if (nullCheck(produkt) && !nullCheck(mersalg))
-            salgsKart = produkt;
-        else if (!nullCheck(produkt) && nullCheck(mersalg))
-            salgsKart = mersalg;
+        if(uid && year && month) {
+            console.log(GetWages(uid, year, month));
+        }
+             
 
+        // AddCommision(uid, year, month, produkt, mersalg);
+    
         setSales((prevSales) => [
             ...prevSales,
             {
-                salgsKart: Array.from(salgsKart),
+                produkt: Array.from(produkt),
+                mersalg: Array.from(mersalg)
             },
         ]);
-        salgsKart.forEach((key, value) => {
-            console.log("Prod: " + key + " verdi: " + value)
-        });
-        
+            
     }
 
     return (
