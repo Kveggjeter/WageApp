@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import "../assets/dash.css"
 import {doSignOut} from "../firebase/auth.ts";
 import {useNavigate} from "react-router-dom";
@@ -7,6 +7,8 @@ import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {NorskKalender} from "../contexts/calendar/NorskKalender.ts";
 import {useAuth} from "../contexts/authContext";
+import {GetWages} from "../firebase/firestore.ts";
+import {MainTable} from "./MainTable.tsx";
 
 export function Dash() {
     const {setInputs} = useProdex();
@@ -15,6 +17,26 @@ export function Dash() {
     const { year, setYear } = UseYear();
     const { month, setMonth } = UseMonth();
     const { uid } = useAuth();
+    const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
+
+    useEffect(() => {
+        const loadTabellData = async () => {
+            if (!uid || !year || !month) return;
+
+            try {
+                const data = await GetWages(uid, year, month);
+                if (data) {
+                    setTabell(data);
+                } else {
+                    setTabell({});
+                }
+            } catch (error) {
+                console.error("Feil ved lasting av tabell:", error);
+                setTabell({});
+            }
+        };
+        loadTabellData();
+    }, [uid, year, month]);
 
     function click (value: number) {
         setYear(value);
@@ -56,80 +78,7 @@ export function Dash() {
                     <div className="dashBox">
                         <div className="leftDash">
                             <h2 id="dateNow">{year} {month}</h2>
-                            <table className="table">
-                                <tr id="tableHeader">
-                                    <th>Produkt</th>
-                                    <th>Nysalg</th>
-                                    <th>Mersalg</th>
-                                    <th className="prov">Provisjon</th>
-                                </tr>
-                                <tr id="nordeaLine">
-                                    <th className="coll" id="nordea">Nordea</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="husLine">
-                                    <th className="coll" id="hus">Hus</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr  id="kaskoLine">
-                                    <th className="coll" id="kasko">Bil(1)</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="delLine">
-                                    <th className="coll" id="delkasko">Bil(2)</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="hppLine">
-                                    <th className="coll" id="hpp">HPP</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="sp1_line">
-                                    <th className="coll" id="sp1">SP 1</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="sp2_line">
-                                    <th className="coll" id="sp2">SP 2</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="sp3_line">
-                                    <th className="coll" id="sp3">SP 3</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="sp4_line">
-                                    <th className="coll" id="sp4">SP 4</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="ekstraLine">
-                                    <th className="coll" id="ekstra">Ekstradekning</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                                <tr id="sectorLine">
-                                    <th className="coll" id="sector">Sector</th>
-                                    <th className="ny"></th>
-                                    <th></th>
-                                    <th className="prov"></th>
-                                </tr>
-                            </table>
+                                <MainTable data={tabell} />
                         </div>
                         <div className="miDash">
                             <div className="factBox">

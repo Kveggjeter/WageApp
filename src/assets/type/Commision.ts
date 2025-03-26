@@ -1,5 +1,4 @@
 export interface Commision {
-    bonus_40: boolean;
     ekstra_mer: number;
     ekstra_ny: number;
     hp1_mer: number;

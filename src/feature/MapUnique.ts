@@ -30,7 +30,7 @@ class MapUnique extends NamesForProduct {
         if (this.udf_hpv.includes(key)) kart.set("UDF_hpv_" + v, value);
         });
 
-        console.log("Filtrert kart:", kart);
+        return kart;
 
     }
 }

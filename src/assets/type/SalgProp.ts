@@ -1,7 +1,5 @@
-import { MouseEventHandler } from "react";
-
 export interface SalgProp {
     showSalg: boolean;
-    closeSalg: MouseEventHandler<HTMLButtonElement>;
+    closeSalg: () => void;
     children: undefined;
 }

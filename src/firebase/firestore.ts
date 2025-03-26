@@ -1,6 +1,6 @@
-import { collection, updateDoc, doc, getDoc, getDocs, setDoc, addDoc } from "firebase/firestore";
+import {collection, doc, getDoc, getDocs, setDoc, updateDoc} from "firebase/firestore";
 import {db} from "./firebase.ts";
-import {Commision} from "../assets/type/Commision.ts";
+
 
 export async function GetCommision() {
 
@@ -8,10 +8,11 @@ export async function GetCommision() {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-        const provisjon = docSnap.data() as Commision;
-        console.log(provisjon);
+        const res = new Map(Object.entries(docSnap.data));
+        return res;
     } else {
-        console.log("No such document!");
+        console.log("Dette dokket finnes ikke kompis!");
+        return null;
     }
 }
 
@@ -48,19 +49,33 @@ async function CreateColl(uid: string, year: number, month: string) {
 }
 
 export async function AddCommision(uid: string, year: number, month: string, produkt: Map<string, number>, mersalg: Map<string, number>)  {
-    
 
-    const docRef = GetWage(uid, year, month);
+    try {
+        const docSnap = await GetWage(uid, year, month);
+        if (!docSnap) {
+            console.error("Kunne ikke hente dokumentet - docSnap er null/undefined");
+            return;
+        }
 
-    let nyRes = produkt.keys();
+        const docRef = docSnap.ref;
+        const docData = docSnap.data() || {};
 
-    while(true) {
-        let res = nyRes.next();
-    
+        for (const [key, newValue] of produkt.entries()) {
+            if (newValue <= 0) continue;
+            const existingValue = docData[key] || 0;
+            docData[key] = existingValue + newValue;
+        }
+
+        for (const [key, newValue] of mersalg.entries()) {
+            if (newValue <= 0) continue;
+            const existingValue = docData[key] || 0;
+            docData[key] = existingValue + newValue;
+        }
+
+        await updateDoc(docRef, docData);
+
+    } catch (e) {
+        console.error(e + " catch i AddCommision");
     }
 
-
-    await updateDoc(docRef, {
-        hp1_ny: 1
-    })
 }

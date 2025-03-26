@@ -14,8 +14,7 @@ import { SalgProp } from "../assets/type/SalgProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import TableComp from "./TableComp.tsx";
 import {RowData} from "../assets/type/TableProp.ts";
-import {useSales} from "../contexts/productContext/SalesContext.tsx";
-import {AddCommision, GetCommision, GetWages} from "../firebase/firestore.ts";
+import {AddCommision, GetCommision} from "../firebase/firestore.ts";
 import {UniqueAdd} from "../feature/UniqueAdd.tsx";
 import MapUnique from "../feature/MapUnique.ts";
 import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
@@ -23,7 +22,7 @@ import {useAuth} from "../contexts/authContext";
 
 
 export function Salg({ showSalg, closeSalg, children }: SalgProp) {
-    const {sales, setSales} = useSales();
+
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
     const { inputs } = useProdex();
@@ -42,49 +41,30 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         setShowProd(true);
     }
 
-    function nullCheck(hm: Map<string, number>) {
-        let stat: boolean = false;
-        hm.forEach((value) => {
-            if (value > 0) stat = true;
-        });
-        return stat;
-    }
 
-    function handleRegister() {
+    const handleRegister = (event: React.FormEvent) => {
+        event.preventDefault();
         const uni = new MapUnique();
-        console.log("inputs:", inputs);
-        console.log("rows:", rows);
         const combined = rows.map((r) => ({
             ...r,
         }));
 
         GetCommision();
         const res = UniqueAdd(combined);
-        const produkt: Map<string, number> = res.produkt;
-        const mersalg: Map<string, number> = res.mersalg;
-        uni.navn(produkt, true)
-        uni.navn(mersalg, false)
-        if(uid && year && month) {
-            console.log(GetWages(uid, year, month));
-        }
-             
+        let produkt: Map<string, number> = res.produkt;
+        let mersalg: Map<string, number> = res.mersalg;
+        produkt = uni.navn(produkt, true)
+        mersalg = uni.navn(mersalg, false)
 
-        // AddCommision(uid, year, month, produkt, mersalg);
-    
-        setSales((prevSales) => [
-            ...prevSales,
-            {
-                produkt: Array.from(produkt),
-                mersalg: Array.from(mersalg)
-            },
-        ]);
-            
+        if(uid && year && month) AddCommision(uid, year, month, produkt, mersalg);
+        closeSalg();
+
     }
 
     return (
         <>
             <Produkter sal={sal} showProd={showProd} closeProd={() => setShowProd(false)} children={undefined}/>
-            <div className="salgBox">
+            <form className="salgBox" onSubmit={handleRegister}>
                 <ul className="imgBulk">
                     <li>
                         <img src={hus} alt="hus"/>
@@ -115,10 +95,10 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                 <div className="tableBulk">
                     <TableComp data={inputs} rows={rows} setRows={setRows}/>
                 </div>
-                <button className="sellbby" onClick={handleRegister}>Registrer</button>
+                <button type="submit" className="sellbby">Registrer</button>
                 {children}
                 <button className="lukk" onClick={closeSalg}>X</button>
-            </div>
+            </form>
         </>
     )
 }
