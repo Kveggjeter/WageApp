@@ -1,14 +1,28 @@
-import { useState } from "react";
+import {useState} from "react";
 import "../assets/dash.css"
 import {doSignOut} from "../firebase/auth.ts";
 import {useNavigate} from "react-router-dom";
 import { Salg } from "../components/Salg.tsx";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
+import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
+import {NorskKalender} from "../contexts/calendar/NorskKalender.ts";
+import {useAuth} from "../contexts/authContext";
 
 export function Dash() {
     const {setInputs} = useProdex();
     const navigate = useNavigate();
-    const [showSalg, setShowSalg] = useState(false);
+    const [ showSalg, setShowSalg ] = useState(false);
+    const { year, setYear } = UseYear();
+    const { month, setMonth } = UseMonth();
+    const { uid } = useAuth();
+
+    function click (value: number) {
+        setYear(value);
+    }
+
+    function mclick (value: number) {
+        setMonth(NorskKalender(value));
+    }
     
     return (
         <>
@@ -16,32 +30,32 @@ export function Dash() {
             <div className="cont">
                 <div className="monthPicker">
                     <div className="dropdown">
-                        <button className="dropbtn">2025 {'\u{2BC6}'}</button>
+                        <button className="dropbtn">{year} {'\u{2BC6}'}</button>
                         <div className="dropdown-content">
-                            <p>2024</p>
-                            <p>2025</p>
-                            <p>2026</p>
-                            <p>2027</p>
+                            <p onClick={() => click(2025)}>2025</p>
+                            <p onClick={() => click(2026)}>2026</p>
+                            <p onClick={() => click(2027)}>2027</p>
+                            <p onClick={() => click(2028)}>2028</p>
                         </div>
                     </div>
                     <div className="monthList">
-                        <button className="monthBtn" id="january">Januar</button>
-                        <button className="monthBtn" id="february">Februar</button>
-                        <button className="monthBtn" id="march">Mars</button>
-                        <button className="monthBtn" id="april">April</button>
-                        <button className="monthBtn" id="may">Mai</button>
-                        <button className="monthBtn" id="june">Juni</button>
-                        <button className="monthBtn" id="july">Juli</button>
-                        <button className="monthBtn" id="august">August</button>
-                        <button className="monthBtn" id="september">September</button>
-                        <button className="monthBtn" id="october">Oktober</button>
-                        <button className="monthBtn" id="november">November</button>
-                        <button className="monthBtn" id="desember">Desember</button>
+                        <button className="monthBtn" id="january" onClick={() => mclick(0)}>Januar</button>
+                        <button className="monthBtn" id="february" onClick={() => mclick(1)}>Februar</button>
+                        <button className="monthBtn" id="march" onClick={() => mclick(2)}>Mars</button>
+                        <button className="monthBtn" id="april" onClick={() => mclick(3)}>April</button>
+                        <button className="monthBtn" id="may" onClick={() => mclick(4)}>Mai</button>
+                        <button className="monthBtn" id="june" onClick={() => mclick(5)}>Juni</button>
+                        <button className="monthBtn" id="july" onClick={() => mclick(6)}>Juli</button>
+                        <button className="monthBtn" id="august" onClick={() => mclick(7)}>August</button>
+                        <button className="monthBtn" id="september" onClick={() => mclick(8)}>September</button>
+                        <button className="monthBtn" id="october" onClick={() => mclick(9)}>Oktober</button>
+                        <button className="monthBtn" id="november" onClick={() => mclick(10)}>November</button>
+                        <button className="monthBtn" id="desember" onClick={() => mclick(11)}>Desember</button>
                     </div>
                 </div>
                     <div className="dashBox">
                         <div className="leftDash">
-                            <h2 id="dateNow">2025 Januar</h2>
+                            <h2 id="dateNow">{year} {month}</h2>
                             <table className="table">
                                 <tr id="tableHeader">
                                     <th>Produkt</th>

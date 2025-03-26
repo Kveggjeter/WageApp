@@ -1,4 +1,4 @@
-import { updateDoc, doc, getDoc } from "firebase/firestore";
+import { collection, updateDoc, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import {db} from "./firebase.ts";
 import {Commision} from "../assets/type/Commision.ts";
 
@@ -15,31 +15,44 @@ export async function GetCommision() {
     }
 }
 
-export async function AddCommision()  {
+export async function GetWages(uid: string, year: number, month: number) {
+    try {
+        return GetWages(uid, year, month).data();
 
-    const docRef = doc(db, "wage", "RfjxtfP0Tn7JMe3qCWfv")
-    console.log("se her a" + sales);
+    } catch (e) {
+        console.error(e);
+    }
+}
 
+async function GetWage(uid: string, year: number, month: string) {
 
+    try {
+        const colRef = await getDocs(collection(db, `${uid}`));
+        const colSnap = await getDoc(doc(db, `${uid}`, year.toString(), month));
 
-    /**
-     *
-
-    function addTogether() {
-
-        for (let i = 0; i < sales.length; i++) {
-            if (isIt(sales[i]) {
-                let val: number | undefined = hm.get(sales[i]);
-                hm.set(sales[i], val! + 1)
-            }
-
+        if (!colRef) {
+            CreateColl(uid, year, month);
         }
-    }
-        */
 
-    function isIt(value: string): boolean{
-        return hm.has(value);
+        return colSnap;
+
+    } catch (e) {
+        console.error(e);
     }
+
+
+
+
+}
+
+async function CreateColl(uid: string, year: number, month: string) {
+    await setDoc(doc(db, uid, year.toString(), month), {});
+}
+
+export async function AddCommision(uid: string, year: number, month: string)  {
+
+    const docRef = GetWage(uid, year, month);
+
 
     await updateDoc(docRef, {
         hp1_ny: 1
