@@ -1,6 +1,6 @@
 import { ProdProps } from "../assets/type/ProdProps";
 import { useProdex } from "../contexts/productContext/Prodex.tsx";
-import {useState} from "react";
+import { useState } from "react";
 
 // Huske dette med map til neste gang, vanskelig å bli klok på
 export function Produkter({sal, showProd, closeProd, children }: ProdProps) {

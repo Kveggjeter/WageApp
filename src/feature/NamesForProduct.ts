@@ -21,7 +21,7 @@ export class NamesForProduct {
     udf_hp1: string [] = ["UDF Bil kasko"];
     udf_hp2: string [] = ["UDF Bil ansvar/delkasko"];
     hpp: string [] = ["Barn", "Behandling", "Kritisk sykdom"];
-    liv: string [] = ["Nordea"];
+    liv: string [] = ["Liv"];
     sector: string [] = ["Sector"];
     ekstra: string [] = ["ekstra"];
 

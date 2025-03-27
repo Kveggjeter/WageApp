@@ -2,17 +2,17 @@ import {collection, doc, getDoc, getDocs, setDoc, updateDoc} from "firebase/fire
 import {db} from "./firebase.ts";
 
 
-export async function GetCommision() {
+export async function GetCommision(): Promise<Map<string, number>> {
 
     const docRef = doc(db, "commisions", "coms");
     const docSnap = await getDoc(docRef);
-
+    let em = new Map<string, number>();
     if (docSnap.exists()) {
-        const res = new Map(Object.entries(docSnap.data));
-        return res;
+        em = new Map(Object.entries(docSnap.data()));
+        return em;
     } else {
         console.log("Dette dokket finnes ikke kompis!");
-        return null;
+        return em;
     }
 }
 

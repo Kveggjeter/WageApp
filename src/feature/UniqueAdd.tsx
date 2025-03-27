@@ -3,12 +3,23 @@ export function UniqueAdd(combined) {
     const mersalg: Map<string, number> = new Map();
     let ekstra: number = 0;
     let merekstra: number = 0;
+    let livSumProdukt: number = 0;
+    let livSumMersalg: number = 0;
 
     combined.forEach((item) => {
-        const id: string = item.product;
+        const isLiv = item.product.includes("Liv");
+        const id: string = isLiv ? "Liv" : item.product;
         const eks: boolean = item.ekstra;
         const maskin: boolean = item.maskinskade;
         const mer: boolean = item.mersalg;
+
+        if (isLiv && item.amount) {
+            if (mer) {
+                livSumMersalg += item.amount;
+            } else {
+                livSumProdukt += item.amount;
+            }
+        }
 
         if(mer) {
             if (mersalg.has(id)) {
@@ -31,6 +42,14 @@ export function UniqueAdd(combined) {
     });
     mersalg.set("ekstra", merekstra);
     produkt.set("ekstra", ekstra)
+
+    if (livSumProdukt > 0) {
+        produkt.set("livSum", livSumProdukt);
+    }
+    if (livSumMersalg > 0) {
+        mersalg.set("livSum", livSumMersalg);
+    }
+
     return {
         produkt: produkt,
         mersalg: mersalg,

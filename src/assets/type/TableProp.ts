@@ -10,4 +10,6 @@ export type RowData = {
     mersalg: boolean;
     ekstra: boolean;
     maskinskade: boolean;
+    isLiv?: boolean;
+    amount?: number;
 };

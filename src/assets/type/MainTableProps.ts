@@ -1,3 +1,3 @@
-export type TableCompProps = {
-    data: { [key: string]: number };
-};
+export interface MainTableProps {
+    tabell: { [key: string]: number };
+}

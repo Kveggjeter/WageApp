@@ -14,7 +14,7 @@ import { SalgProp } from "../assets/type/SalgProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import TableComp from "./TableComp.tsx";
 import {RowData} from "../assets/type/TableProp.ts";
-import {AddCommision, GetCommision} from "../firebase/firestore.ts";
+import {AddCommision} from "../firebase/firestore.ts";
 import {UniqueAdd} from "../feature/UniqueAdd.tsx";
 import MapUnique from "../feature/MapUnique.ts";
 import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
@@ -45,11 +45,16 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const handleRegister = (event: React.FormEvent) => {
         event.preventDefault();
         const uni = new MapUnique();
-        const combined = rows.map((r) => ({
-            ...r,
-        }));
+        const combined = rows.map((r) => {
+            if (r.isLiv) {
+                return {
+                    ...r,
+                    product: r.isLiv? "Liv": r.product
+                };
+            }
+            return r;
+        });
 
-        GetCommision();
         const res = UniqueAdd(combined);
         let produkt: Map<string, number> = res.produkt;
         let mersalg: Map<string, number> = res.mersalg;
@@ -93,7 +98,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                     </li>
                 </ul>
                 <div className="tableBulk">
-                    <TableComp data={inputs} rows={rows} setRows={setRows}/>
+                    <TableComp data={inputs} rows={rows} setRows={setRows} />
                 </div>
                 <button type="submit" className="sellbby">Registrer</button>
                 {children}

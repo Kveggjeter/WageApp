@@ -11,10 +11,8 @@ class MapUnique extends NamesForProduct {
         else v = mer;
 
         const kart: Map<string, number> = new Map();
-        console.log("Sjekk her" + this.sp4, this.sp3, this.sp2, this.sp1, this.hpv, this.hp1, this.hp2, this.hpp, this.sector, this.liv);
 
         s.forEach((value, key) => {
-            console.log("Sjekker key:", key);
         if (this.sp4.includes(key)) kart.set("sp4_" + v, value);
         if (this.sp3.includes(key)) kart.set("sp3_" + v, value);
         if (this.sp2.includes(key)) kart.set("sp2_" + v, value);
@@ -28,6 +26,11 @@ class MapUnique extends NamesForProduct {
         if (this.udf_hp1.includes(key)) kart.set("UDF_hp1_" + v, value);
         if (this.udf_hp2.includes(key)) kart.set("UDF_hp2_" + v, value);
         if (this.udf_hpv.includes(key)) kart.set("UDF_hpv_" + v, value);
+        if (this.liv.includes(key)) kart.set("liv_" + v, value);
+        if (key === "livSum") {
+            kart.set("livSum_" + v, value);
+            return;
+        }
         });
 
         return kart;

@@ -8,7 +8,8 @@ import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {NorskKalender} from "../contexts/calendar/NorskKalender.ts";
 import {useAuth} from "../contexts/authContext";
 import {GetWages} from "../firebase/firestore.ts";
-import {MainTable} from "./MainTable.tsx";
+import MainTable from "./MainTable.tsx";
+import {MakeWage} from "../feature/MakeWage.ts";
 
 export function Dash() {
     const {setInputs} = useProdex();
@@ -18,6 +19,9 @@ export function Dash() {
     const { month, setMonth } = UseMonth();
     const { uid } = useAuth();
     const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
+    const [wages, setWages] = useState<Map<string, number>>(new Map());
+    let res: Map<string, number> = new Map<string, number>();
+    res = new Map(Object.entries(tabell));
 
     useEffect(() => {
         const loadTabellData = async () => {
@@ -25,11 +29,8 @@ export function Dash() {
 
             try {
                 const data = await GetWages(uid, year, month);
-                if (data) {
-                    setTabell(data);
-                } else {
-                    setTabell({});
-                }
+                if (data) setTabell(data);
+                else setTabell({});
             } catch (error) {
                 console.error("Feil ved lasting av tabell:", error);
                 setTabell({});
@@ -37,6 +38,56 @@ export function Dash() {
         };
         loadTabellData();
     }, [uid, year, month]);
+
+    useEffect(() => {
+        const calculateWages = async () => {
+            try {
+                const result = await MakeWage({ tabell });
+                setWages(result);
+                console.log("Calculated wages:", result);
+            } catch (e) {
+                console.error("Error calculating wages:", e);
+            }
+        };
+        calculateWages();
+    }, [tabell]);
+
+    const getValue = (key: string) => wages.get(key) || ""
+    const getCount = (key: string) => res.get(key) || ""
+    const sjekk = wages.get("livSum_mer");
+    console.log("se her " + sjekk);
+    const husTotal =
+        +getCount("hpv_mer") + +getCount("hpv_ny") +
+        +getCount("hpv_udf_mer") + +getCount("hpv_udf_ny");
+    const bilTotal =
+        +getCount("hp1_ny") + +getCount("hp1_mer") +
+        +getCount("hp2_ny") + +getCount("hp1_udf_ny");
+    const hppTotal = +getCount("hpp_ny") + +getCount("hpp_mer");
+
+    const hpTotal = husTotal + bilTotal + hppTotal;
+    let hpBonus = hpTotal - 17;
+    let hpBonusSum = 0;
+    if (hpBonus <= 0) {
+            hpBonus = 0;
+        } else hpBonusSum = hpBonus * 450;
+    let femmern: number = 0;
+    if (hpBonus >= 23) femmern = 5000;
+
+    const livProv: number = +getValue("livSum_ny") + +getValue("livSum_mer");
+    const totalLiv: number = (4 * +getValue("livSum_ny")) + ((+getValue("livSum_mer")/18) * 100)
+    let skadeProv = 0;
+    wages.forEach((value) => {
+        skadeProv += value;
+    });
+
+    skadeProv -= livProv;
+
+
+    const numClean = (n: number) => {
+        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+
+    const totalProv: number = skadeProv + hpBonusSum + femmern;
 
     function click (value: number) {
         setYear(value);
@@ -78,17 +129,17 @@ export function Dash() {
                     <div className="dashBox">
                         <div className="leftDash">
                             <h2 id="dateNow">{year} {month}</h2>
-                                <MainTable data={tabell} />
+                                <MainTable getValue={getValue} getCount={getCount} />
                         </div>
                         <div className="miDash">
                             <div className="factBox">
                                 <div className="hpBonus">
                                     <h3 id="hpBonus">HP bonus</h3>
-                                    <h2 id="bonusNum">17/23</h2>
+                                    <h2 id="bonusNum">{hpBonus}/23</h2>
                                 </div>
                                 <div className="sgNor">
                                     <h3 id="sgNor">Salgsum Nordea</h3>
-                                    <h2 id="sgNum">78 032NOK</h2>
+                                    <h2 id="sgNum">{numClean(totalLiv)}NOK</h2>
                                 </div>
                             </div>
                             <div className="btnBulk">
@@ -103,25 +154,25 @@ export function Dash() {
                         <div className="rightDash">
                             <div className="hpBulk">
                                 <div className="hpCount">
-                                    <h3 id="hpHus">11 Hus</h3>
-                                    <h3 id="hpBil">20 bil</h3>
-                                    <h3 id="hphpp">15 HPP</h3>
+                                    <h3 id="hpHus">{husTotal} Hus</h3>
+                                    <h3 id="hpBil">{bilTotal} bil</h3>
+                                    <h3 id="hphpp">{hppTotal} HPP</h3>
                                 </div>
                                 <div className="totalHp">
-                                    <h1 id="totalHp">46HP</h1>
+                                    <h1 id="totalHp">{hpTotal}</h1>
                                 </div>
                             </div>
                             <div className="skadeBulk">
                                 <h3 id="provSkade">Provisjon skade</h3>
-                                <h1 id="salgSkadeSum">31 512NOK</h1>
+                                <h1 id="salgSkadeSum">{numClean(~~skadeProv)}NOK</h1>
                             </div>
                             <div className="livBulk">
                                 <h3 id="provLiv">Provisjon Nordea</h3>
-                                <h1 id="salgLivSum">27 827NOK</h1>
+                                <h1 id="salgLivSum">{numClean(~~livProv)}</h1>
                             </div>
                             <div className="totalProvSum">
                                 <h3 id="totalProvSum">Total provisjon</h3>
-                                <h1 id="totalProvSalgSum">98 421NOK</h1>
+                                <h1 id="totalProvSalgSum">{numClean(totalProv)}NOK</h1>
                             </div>
                         </div>
                     </div>
