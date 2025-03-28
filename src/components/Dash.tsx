@@ -13,6 +13,7 @@ import {MakeWage} from "../feature/MakeWage.ts";
 
 export function Dash() {
     const {setInputs} = useProdex();
+    const [ refresh, setRefresh ] = useState(0);
     const navigate = useNavigate();
     const [ showSalg, setShowSalg ] = useState(false);
     const { year, setYear } = UseYear();
@@ -37,7 +38,7 @@ export function Dash() {
             }
         };
         loadTabellData();
-    }, [uid, year, month]);
+    }, [uid, year, month, refresh]);
 
     useEffect(() => {
         const calculateWages = async () => {
@@ -50,7 +51,7 @@ export function Dash() {
             }
         };
         calculateWages();
-    }, [tabell]);
+    }, [tabell, refresh]);
 
     const getValue = (key: string) => wages.get(key) || ""
     const getCount = (key: string) => res.get(key) || ""
@@ -99,7 +100,7 @@ export function Dash() {
     
     return (
         <>
-        <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}) } } children={undefined}/>
+        <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
             <div className="cont">
                 <div className="monthPicker">
                     <div className="dropdown">

@@ -1,4 +1,6 @@
-export function UniqueAdd(combined) {
+import {RowData} from "../assets/type/TableProp.ts";
+
+export function UniqueAdd(combined: RowData[]) {
     const produkt: Map<string, number> = new Map();
     const mersalg: Map<string, number> = new Map();
     let ekstra: number = 0;
@@ -6,7 +8,7 @@ export function UniqueAdd(combined) {
     let livSumProdukt: number = 0;
     let livSumMersalg: number = 0;
 
-    combined.forEach((item) => {
+    combined.forEach((item: RowData) => {
         const isLiv = item.product.includes("Liv");
         const id: string = isLiv ? "Liv" : item.product;
         const eks: boolean = item.ekstra;

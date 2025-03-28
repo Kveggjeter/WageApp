@@ -42,7 +42,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     }
 
 
-    const handleRegister = (event: React.FormEvent) => {
+    const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
         const uni = new MapUnique();
         const combined = rows.map((r) => {
@@ -61,7 +61,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         produkt = uni.navn(produkt, true)
         mersalg = uni.navn(mersalg, false)
 
-        if(uid && year && month) AddCommision(uid, year, month, produkt, mersalg);
+        if(uid && year && month) await AddCommision(uid, year, month, produkt, mersalg);
         closeSalg();
 
     }

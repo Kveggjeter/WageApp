@@ -6,6 +6,7 @@ const ProdexContext = createContext<ProdexProps>({
     setInputs: () => {},
 })
 
+
 export function ProdexProvider ({ children }: { children: React.ReactNode }) {
     const [inputs, setInputs] = useState<{ [key: string]: string | number }>({
     });
@@ -20,4 +21,6 @@ export function ProdexProvider ({ children }: { children: React.ReactNode }) {
 export function useProdex() {
     return useContext(ProdexContext);
 }
+
+
 

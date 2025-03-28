@@ -35,7 +35,7 @@ const MainTable = ({getValue, getCount}: GetThoseProps) => {
             </tr>
             <tr>Hus (UDF)
                 <td>{getCount("hpv_udf_ny")}</td>
-                <td>{getCount("hpv__udf_mer")}</td>
+                <td>{getCount("hpv_udf_mer")}</td>
                 <td>{hpv_udf_prov}</td>
             </tr>
             <tr>Bil (hp1)
