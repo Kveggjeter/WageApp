@@ -79,3 +79,19 @@ export async function AddCommision(uid: string, year: number, month: string, pro
     }
 
 }
+
+export async function RemoveCommision(uid: string, year: number, month: string, list: Map<string, number>) {
+    try {
+        const docRef = await GetWage(uid, year, month);
+        if (!docRef) {
+            console.error("Kunne ikke hente dokument");
+            return;
+        }
+        const updateData = Object.fromEntries(list);
+        await updateDoc(docRef.ref, updateData);
+
+
+    } catch (e) {
+        console.error(e + " catch i RemoveCommision");
+    }
+}

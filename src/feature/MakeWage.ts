@@ -8,10 +8,6 @@ export async function MakeWage({ tabell }: MainTableProps): Promise<Map<string, 
         const com = new Map(Object.entries(tabell));
         const wage = new Map<string, number>;
 
-        commissionData.forEach((value, key) => {
-            console.log("getcom -> " + key + " " + value)
-    });
-
         com.forEach((value: number, key: string) => {
             console.log("data -> " + value + " " + key)
             const commissionRate = commissionData.get(key);

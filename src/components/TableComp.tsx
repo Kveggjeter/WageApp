@@ -36,21 +36,21 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
     }
 
     return (
-        <table>
+        <table className="ml-5">
             <thead>
-            <tr>
-                <th>Produkt</th>
-                <th>Mersalg</th>
-                <th>Ekstra</th>
-                <th>Maskinskade</th>
+            <tr className="bg-gray-200">
+                <th className="p-2">Produkt</th>
+                <th className="p-2">Mersalg</th>
+                <th className="p-2">Ekstra</th>
+                <th className="p-2">Maskinskade</th>
             </tr>
             </thead>
             <tbody>
             {rows.map(row => (
                 <tr key={row.id}>
-                    <td>{row.product}</td>
+                    <td className="pt-3">{row.product}</td>
                     <td>
-                        <input
+                        <input className="flex self-center"
                             type="checkbox"
                             checked={row.mersalg}
                             onChange={() => handleCheckboxChange(row.id, "mersalg")}
@@ -59,7 +59,7 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
                     <td>{row.isLiv ? (
                         <span>Sum:</span>
                     ) : (
-                            <input
+                            <input className="flex self-center"
                                 type="checkbox"
                                 checked={row.ekstra}
                                 onChange={() => handleCheckboxChange(row.id, "ekstra")}
@@ -68,12 +68,12 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
                     </td>
                     <td>
                         {row.isLiv ? (
-                            <input
+                            <input className="flex self-center"
                                 type="number"
                                 placeholder="Salgssum"
                                 onChange={(e) => handleLifeBoxChange(row.id, e.target.value)}
                             />
-                        ) : ( <input
+                        ) : ( <input className="flex self-center"
                             type="checkbox"
                             checked={row.maskinskade}
                             onChange={() => handleCheckboxChange(row.id, "maskinskade")}
