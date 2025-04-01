@@ -95,7 +95,7 @@ export function Dash() {
         return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
 
-    const totalProv: number = skadeProv + hpBonusSum + femmern;
+    const totalProv: number = skadeProv + hpBonusSum + femmern + livProv;
 
     function click (value: number) {
         setYear(value);
