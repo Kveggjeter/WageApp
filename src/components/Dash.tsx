@@ -145,13 +145,13 @@ export function Dash() {
                             <h2 className="text-2xl w-38 pt-4 pb-1 border-b-2 border-grey-200 mb-2">{year} {month}</h2>
                                 <MainTable getValue={getValue} getCount={getCount} />
                         </div>
-                        <div className="flex flex-col pl-7 text-center max-w-fit">
-                            <div className="flex flex-row self-center gap-6 mt-7 border-2 border-grey-200 border-dotted rounded-sm p-2 font-['Albert_Sans'] text-lg font-light md:max-lg:flex-col md:max-lg:max-w-30 md:max-lg:self-center">
-                                <div className="flex-1 w-40 border-r-2 border-grey-200 border-dotted md:max-lg:border-r-0 md:max-lg:pb-2 md:max-lg:mb-2 md:max-lg:max-w-30">
+                        <div className="flex flex-col pl-20 text-center max-w-fit">
+                            <div className="flex flex-row self-center gap-6 mt-7 border-2 border-grey-200 border-dotted rounded-sm p-2 font-['Albert_Sans'] text-xl font-light md:max-xl:flex-col md:max-xl:max-w-30 md:max-xl:self-center">
+                                <div className="flex-1 w-40 border-r-2 border-grey-200 border-dotted md:max-xl:border-r-0 md:max-xl:pb-2 md:max-xl:mb-2 md:max-xl:max-w-30">
                                     <h3 className="hpBonus">HP bonus</h3>
                                     <h2 className="text-3xl">{hpBonus}/23</h2>
                                 </div>
-                                <div className="flex-1 w-40 md:max-lg:max-w-30">
+                                <div className="flex-1 w-40 md:max-xl:max-w-30">
                                     <h3 id="sgNor">Salgsum Nordea</h3>
                                     <h2 className="text-3xl">{numClean(totalLiv)} NOK</h2>
                                 </div>
