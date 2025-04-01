@@ -19,6 +19,8 @@ export function Login() {
         e.preventDefault();
         setIsLoading(true);
         console.log("Trying to sign in with:", email, password);
+        const da = Date.now() + 2 * (60 * 60 * 1000);
+        console.log({da});
         try {
             await doSignInWithEmailAndPassword(email, password);
             console.log("Sign-in completed!");

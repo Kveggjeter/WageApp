@@ -114,8 +114,8 @@ export function Dash() {
             )}
         <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
             <RemoveSalg showRemove={showRemove} closeRemove={() => { setShowRemove(false); setInputs({}); setRefresh(prev => prev +1); }} children={undefined}/>
-            <div className="overflow-hidden flex items-center justify-center gap-15 w-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
-                <div className="relative flex flex-col mt-auto mb-13 pl-2 pr-2 item-center w-42 h-11/12 rounded bg-white/50 backdrop-blur-sm shadow font-['Albert_Sans']">
+            <div className="flex items-center justify-start pl-10 pr-10 gap-13 max-w-screen min-w-screen max-h-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
+                <div className="relative flex flex-col mb-13 mt-13 pr-2 pl-2 item-center w-42 max-h-screen rounded bg-white/50 backdrop-blur-sm shadow font-['Albert_Sans']">
                     <div className="relative w-full inline-block group pt-5">
                         <button className="border-none bg-white w-[90%] h-[35px] mx-[5%] font-['Albert_Sans'] text-[20px] font-light shadow-md hover:bg-gray-200 transition">{year} {'\u{2BC6}'}</button>
                         <div className="absolute hidden bg-[#f1f1f1] max-h-[80px] overflow-y-auto min-w-[170px] max-w-[170px] shadow-lg z-10 group-hover:block text-center">
@@ -125,7 +125,7 @@ export function Dash() {
                             <p className="hover:bg-white" onClick={() => click(2028)}>2028</p>
                         </div>
                     </div>
-                    <div className="flex flex-col mt-22 mb-10 gap-6 ">
+                    <div className="flex flex-col mt-22 mb-10 gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-y-auto ">
                         <button className={monthBtn} id="january" onClick={() => mclick(0)}>Januar</button>
                         <button className={monthBtn} id="february" onClick={() => mclick(1)}>Februar</button>
                         <button className={monthBtn} id="march" onClick={() => mclick(2)}>Mars</button>
@@ -140,36 +140,36 @@ export function Dash() {
                         <button className={monthBtn} id="desember" onClick={() => mclick(11)}>Desember</button>
                     </div>
                 </div>
-                    <div className="flex flex-row self-center w-9/12 h-150 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
-                        <div className="flex flex-col self-start pl-15 w-[35%]">
-                            <h2 className="text-2xl w-38 pt-4 pb-1 border-b-2 border-grey-200 mb-2">{year} {month}</h2>
+                    <div className="flex flex-row gap-2 pl-4 pb-7 max-h-screen max-w-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
+                        <div className="flex flex-col self-start">
+                            <h2 className="text-2xl w-full pt-4 pb-1 border-b-2 border-grey-200 mb-2">{year} {month}</h2>
                                 <MainTable getValue={getValue} getCount={getCount} />
                         </div>
-                        <div className="flex flex-col pl-20 text-center max-w-fit">
-                            <div className="flex flex-row self-center gap-6 mt-7 border-2 border-grey-200 border-dotted rounded-sm p-2 font-['Albert_Sans'] text-xl font-light md:max-xl:flex-col md:max-xl:max-w-30 md:max-xl:self-center">
-                                <div className="flex-1 w-40 border-r-2 border-grey-200 border-dotted md:max-xl:border-r-0 md:max-xl:pb-2 md:max-xl:mb-2 md:max-xl:max-w-30">
+                        <div className="flex flex-col text-center">
+                            <div className="flex flex-col self-center gap-6 mt-7 p-2 font-['Albert_Sans'] text-xl font-light md:max-xl:flex-col md:max-xl:max-w-30 md:max-xl:self-center">
+                                <div className="flex-1 md:max-xl:border-r-0 md:max-xl:pb-2 md:max-xl:mb-2 md:max-xl:max-w-30">
                                     <h3 className="hpBonus">HP bonus</h3>
                                     <h2 className="text-3xl">{hpBonus}/23</h2>
                                 </div>
-                                <div className="flex-1 w-40 md:max-xl:max-w-30">
+                                <div className="flex-1 md:max-xl:max-w-30">
                                     <h3 id="sgNor">Salgsum Nordea</h3>
                                     <h2 className="text-3xl">{numClean(totalLiv)} NOK</h2>
                                 </div>
                             </div>
-                            <div className="flex gap-7 mt-auto ml-2 mr-4 mb-2 font-['Albert_Sans'] rounded-lg">
+                            <div className="flex gap-2 mt-auto ml-2 mr-4 font-['Albert_Sans'] rounded-lg">
                                 <button
-                                    className="w-38 h-10 text-xl font-light text-white bg-green-600 ease-in-out duration-600 hover:cursor-pointer hover:bg-green-500 hover:ease-in-out hover:duration-500"
+                                    className="max-w-full pl-2 pr-2 text-center leading-none h-8 text-center text-lg font-light text-white bg-green-600 ease-in-out duration-600 hover:cursor-pointer hover:bg-green-500 hover:ease-in-out hover:duration-500"
                                     id="addSale"
                                     onClick={()=>setShowSalg(true)}
-                                    >Legg til salg</button>
-                                <button className="mt-auto w-38 h-9 text-white italic text-lg font-extralight bg-red-800 duration-500 ease-in-out hover:cursor-pointer hover:bg-red-700 hover:ease-in-out hover:duration-500"
+                                    >Salg</button>
+                                <button className="max-w-full pl-2 pr-2 h-8 leading-none text-white italic text-lg font-extralight bg-red-800 duration-500 ease-in-out hover:cursor-pointer hover:bg-red-700 hover:ease-in-out hover:duration-500"
                                 id="removeSale"
                                         onClick={()=>setShowRemove(true)}
                                 >Fjern salg</button>
                             </div>
                         </div>
-                        <div className="flex flex-col ml-auto pr-5 items-end w-[30%] mt-5 text-center">
-                            <div className="flex flex-col justify-center items-center mb-7 border-b-3 border-gray-200">
+                        <div className="flex flex-col pr-5 items-end mt-5 text-center">
+                            <div className="flex flex-col justify-center items-center border-b-3 border-gray-200">
                                 <div className="font-['Albert_Sans'] font-light text-xl flex flex-row justify-center gap-2">
                                     <h3 id="hpHus">{husTotal} Hus</h3>
                                     <h3 id="hpBil">{bilTotal} Bil</h3>
@@ -193,12 +193,14 @@ export function Dash() {
                             </div>
                         </div>
                     </div>
-                <button className="absolute shadow top-5 right-5 w-38 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
+                    <div className="flex mb-auto">
+                <button className="shadow min-w-30 mt-5 leading-none max-w-full pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
                         onClick={() => {
                             doSignOut().then(() => {
                                 navigate('/')
                             })
                         }}>Logg ut</button>
+                        </div>
             </div>
         </>
     )
