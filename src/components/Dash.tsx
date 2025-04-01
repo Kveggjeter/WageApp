@@ -21,6 +21,7 @@ export function Dash() {
     const { year, setYear } = UseYear();
     const { month, setMonth } = UseMonth();
     const { uid } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
     const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
     const monthBtn = "bg-white text-center w-full h-7 font-['Albert_Sans'] text-2xl font-light shadow hover:bg-gray-100";
     const [wages, setWages] = useState<Map<string, number>>(new Map());
@@ -32,12 +33,15 @@ export function Dash() {
             if (!uid || !year || !month) return;
 
             try {
+                setIsLoading(true);
                 const data = await GetWages(uid, year, month);
                 if (data) setTabell(data);
                 else setTabell({});
             } catch (error) {
                 console.error("Feil ved lasting av tabell:", error);
                 setTabell({});
+            } finally {
+                setIsLoading(false);
             }
         };
         loadTabellData();
@@ -103,6 +107,11 @@ export function Dash() {
     
     return (
         <>
+            {isLoading && (
+                <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-black/50">
+                    <div className="w-16 h-16 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
+                </div>
+            )}
         <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
             <RemoveSalg showRemove={showRemove} closeRemove={() => { setShowRemove(false); setInputs({}); setRefresh(prev => prev +1); }} children={undefined}/>
             <div className="overflow-hidden flex items-center justify-center gap-15 w-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>

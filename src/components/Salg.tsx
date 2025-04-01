@@ -7,7 +7,7 @@ import annet from "../assets/images/nliprivat_24.gif";
 import nordea from "../assets/images/nordealogo_24.gif";
 import reise from "../assets/images/reise_24.gif";
 import Produkter from "./Produkter.tsx";
-import {useState} from "react";
+import React, {useState} from "react";
 import Sak from "../feature/sak.ts";
 import { SalgProp } from "../assets/type/SalgProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
@@ -29,6 +29,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const { year } = UseYear();
     const { month } = UseMonth();
     const { uid } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
     const imgBulkImg = "w-6 h-6";
     const listLi = "font-['Albert_Sans'] font-light items-center gap-2"
     const phover = "hover:cursor-pointer hover:text-green-500"
@@ -46,6 +47,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
+        setIsLoading(true);
         const uni = new MapUnique();
         const combined = rows.map((r) => {
             if (r.isLiv) {
@@ -64,12 +66,18 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         mersalg = uni.navn(mersalg, false)
 
         if(uid && year && month) await AddCommision(uid, year, month, produkt, mersalg);
+        setIsLoading(false);
         closeSalg();
 
     }
 
     return (
         <>
+            {isLoading && (
+                <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-black/50">
+                    <div className="w-16 h-16 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
+                </div>
+            )}
             <Produkter sal={sal} showProd={showProd} closeProd={() => setShowProd(false)} children={undefined}/>
             <form className="flex flex-row absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[600px] w-[800px] bg-white border border-black z-10"
                   onSubmit={handleRegister}>

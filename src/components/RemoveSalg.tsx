@@ -2,7 +2,7 @@ import {RemoveProp} from "../assets/type/RemoveProp.ts";
 import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {useAuth} from "../contexts/authContext";
 import {GetWages, RemoveCommision} from "../firebase/firestore.ts";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 export function RemoveSalg({showRemove, closeRemove, children }: RemoveProp) {
 
@@ -11,6 +11,7 @@ export function RemoveSalg({showRemove, closeRemove, children }: RemoveProp) {
     const { uid } = useAuth();
     const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
     const [formData, setFormData] = useState<{ [key: string]: number }>({});
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const data = async () => {
@@ -44,18 +45,24 @@ export function RemoveSalg({showRemove, closeRemove, children }: RemoveProp) {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+        setIsLoading(true);
         const bekreft = window.confirm("Endringene er permanentente og kan ikke endres. Du må eventuelt legge tilbake det du har slettet. Vil du virkelig gjøre dette?")
         if (!bekreft) return;
         const list = new Map<string, number>(Object.entries(formData));
         if (uid && year && month) {
             await RemoveCommision(uid, year, month, list);
+            setIsLoading(false);
             closeRemove();
         }
     }
 
         return (
             <>
-
+                {isLoading && (
+                    <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-black/50">
+                        <div className="w-16 h-16 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}
                     className="flex flex-col absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[500px] w-[350px] bg-white border border-black z-10 pb-5">
                     <ul className="self-center font-light font-['Albert_Sans'] overflow-y-auto overflow-x-hidden p-10 mb-10">
