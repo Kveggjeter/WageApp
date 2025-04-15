@@ -35,7 +35,7 @@ export function Produkter({sal, showProd, closeProd, children }: ProdProps) {
     
     
     return (
-        <form onSubmit={handleSubmit} className="font-['Albert_Sans'] font-light flex absolute flex-col left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 min-h-26 h-auto w-84 shadow-xl z-20 p-5 gap-4 bg-white">
+        <form onSubmit={handleSubmit} className="font-['Albert_Sans'] font-light flex absolute flex-col left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 min-h-26 h-auto max-h-screen overflow-y-auto w-84 shadow-xl z-20 p-5 gap-4 bg-white">
             {sal?.map((value, index) => (
                 <span className="flex flex-row border-b-1 border-gray-400 border-dotted">
                     <a key={index}>
