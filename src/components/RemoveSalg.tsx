@@ -4,11 +4,12 @@ import {useAuth} from "../contexts/authContext";
 import {GetWages, RemoveCommision} from "../firebase/firestore.ts";
 import React, {useEffect, useState} from "react";
 
-export function RemoveSalg({showRemove, closeRemove, children }: RemoveProp) {
+export function RemoveSalg({ showRemove, closeRemove, children }: RemoveProp) {
 
     const { year } = UseYear();
     const { month } = UseMonth();
     const { uid } = useAuth();
+    
     const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
     const [formData, setFormData] = useState<{ [key: string]: number }>({});
     const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +30,7 @@ export function RemoveSalg({showRemove, closeRemove, children }: RemoveProp) {
             }
         };
         data();
-    }, [uid, year, month]);
+    }, [uid, year, month, showRemove]);
 
     if (!showRemove) { return null }
 
