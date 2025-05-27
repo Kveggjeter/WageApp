@@ -114,7 +114,7 @@ export function Dash() {
             )}
         <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
             <RemoveSalg showRemove={showRemove} closeRemove={() => { setShowRemove(false); setInputs({}); setRefresh(prev => prev +1); }} children={undefined}/>
-            <div className="flex items-center justify-start pl-10 pr-10 gap-13 max-w-screen min-w-screen max-h-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
+            <div className="flex justify-between items-center pl-10 pr-10 gap-13 max-w-screen min-w-screen max-h-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
                 <div className="relative flex flex-col mb-13 mt-13 pr-2 pl-2 item-center w-42 max-h-screen rounded bg-white/50 backdrop-blur-sm shadow font-['Albert_Sans']">
                     <div className="relative w-full inline-block group pt-5">
                         <button className="border-none bg-white w-[90%] h-[35px] mx-[5%] font-['Albert_Sans'] text-[20px] font-light shadow-md hover:bg-gray-200 transition">{year} {'\u{2BC6}'}</button>
@@ -140,12 +140,12 @@ export function Dash() {
                         <button className={monthBtn} id="desember" onClick={() => mclick(11)}>Desember</button>
                     </div>
                 </div>
-                    <div className="flex flex-row gap-2 pl-4 pb-7 max-h-screen max-w-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
+                    <div className="flex gap-2 pl-4 pb-7 max-h-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
                         <div className="flex flex-col self-start">
                             <h2 className="text-2xl w-full pt-4 pb-1 border-b-2 border-grey-200 mb-2">{year} {month}</h2>
                                 <MainTable getValue={getValue} getCount={getCount} />
                         </div>
-                        <div className="flex flex-col text-center">
+                        <div className="flex flex-col text-center ">
                             <div className="flex flex-col self-center gap-6 mt-7 p-2 font-['Albert_Sans'] text-xl font-light md:max-xl:flex-col md:max-xl:max-w-30 md:max-xl:self-center">
                                 <div className="flex-1 md:max-xl:border-r-0 md:max-xl:pb-2 md:max-xl:mb-2 md:max-xl:max-w-30">
                                     <h3 className="hpBonus">HP bonus</h3>
@@ -194,7 +194,7 @@ export function Dash() {
                         </div>
                     </div>
                     <div className="flex mb-auto">
-                <button className="shadow min-w-30 mt-5 leading-none max-w-full pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
+                <button className="shadow min-w-30 mt-5 leading-none pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
                         onClick={() => {
                             doSignOut().then(() => {
                                 navigate('/')

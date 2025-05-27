@@ -9,13 +9,13 @@ export class NamesForProduct {
     a: string[] = [ "Huseier bolig", "Engangstransport", "Sector" ];
     bt: string[] = [ "Båt" ];
 
-    sp4: string[] = ["Råte og skadedyr", "Innbo Gruppe", "Tillegg til innbo", "Verdigjenstand", "Moped", "Campingvogn/tilhenger",
+    sp4: string[] = ["Råte og skadedyr", "Innbo Gruppe","Snøscooter", "Tillegg til innbo", "Verdigjenstand", "Moped", "Campingvogn/tilhenger",
         "Veteran", "Gårdsbil","Huseier bolig", "Engangstransport", "Traktor/arbeidsmaskin", "Traktor og andre", "Elsparkesykkel", "Ulykke", "Reise", "Dyr"];
     sp1: string [] = ["OBOS person", "NITO person" ];
     sp2: string [] = ["MC", "Hytte", "Båt"];
     sp3: string [] = ["Innbo"];
     hpv: string [] = ["Hus"];
-    hp1: string [] = ["Bil kasko"];
+    hp1: string [] = ["Bil kasko", "Bobil"];
     hp2: string [] = ["Bil ansvar/delkasko"];
     udf_hpv: string [] = ["UDF Hus"];
     udf_hp1: string [] = ["UDF Bil kasko"];

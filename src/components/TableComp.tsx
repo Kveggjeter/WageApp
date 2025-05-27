@@ -1,9 +1,12 @@
 import {RowData, TableProp} from "../assets/type/TableProp.ts";
 import {useEffect} from "react";
+import {useProdex} from "../contexts/productContext/Prodex.tsx";
+
+
 
 const TableComp = ({ data, rows, setRows}: TableProp) => {
-    useEffect(() => {
-        const entries = Object.entries(data);
+
+ const entries = Object.entries(data);
         const newRows: RowData[] = entries.flatMap(([key, val]) => {
             const count = typeof val === "number" ? val : 1;
             return Array.from({ length: count }, (_, i) => ({
@@ -15,8 +18,13 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
                 isLiv: key.includes("Liv")
             }));
         });
+
+    useEffect(() => {
         setRows(newRows);
     }, [data, setRows]);
+
+    const { setInputs } = useProdex();
+
 
     function handleCheckboxChange(rowId: string, field: keyof RowData) {
         setRows((prev) =>
@@ -33,6 +41,20 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
                 ? { ...row, amount: numValue }
                 : row
         ));
+    }
+
+    function handleLineRemoval(rowId: string, product: string) {
+       setRows(prev => prev.filter(row => row.id !== rowId));
+
+       setInputs(prev => {
+        const next = { ...prev};
+
+        if (typeof next[product] === "number") {
+            next[product] = (next[product] as number) - 1;
+            if (next[product] <= 0) delete next[product];
+        }
+        return next;
+       })
     }
 
     return (
@@ -79,6 +101,9 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
                             onChange={() => handleCheckboxChange(row.id, "maskinskade")}
                             disabled={row.isLiv}
                         /> )}
+                    </td>
+                    <td>
+                        <button className="w-5 h-5 text-[18px] text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={() => handleLineRemoval(row.id, row.product)}>X</button>
                     </td>
                 </tr>
             ))}

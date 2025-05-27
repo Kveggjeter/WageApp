@@ -56,6 +56,11 @@ const MainTable = ({getValue, getCount}: GetThoseProps) => {
                 <td className={valueCell}>{getCount("hp1_udf_mer")}</td>
                 <td className={lastCell}>{hp1_udf_prov}</td>
             </tr>
+            <tr><td className={tableTd}>Bil (UDF hp2)</td>
+                <td className={valueCell}>{getCount("hp2_udf_ny")}</td>
+                <td className={valueCell}>{getCount("hp2_udf_mer")}</td>
+                <td className={lastCell}>{hp1_udf_prov}</td>
+            </tr>
             <tr><td className={tableTd}>HPP</td>
                 <td className={valueCell}>{getCount("hpp_ny")}</td>
                 <td className={valueCell}>{getCount("hpp_mer")}</td>
