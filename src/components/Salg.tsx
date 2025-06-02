@@ -79,7 +79,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                 </div>
             )}
             <Produkter sal={sal} showProd={showProd} closeProd={() => setShowProd(false)} children={undefined}/>
-            <form className="flex flex-row absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[600px] w-[800px] bg-white border border-black z-10"
+            <form className="flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[600px] w-[800px] bg-white border border-black z-10"
                   onSubmit={handleRegister}>
                 <ul className="pt-5 pl-4 flex flex-col gap-4">
                     <li className={listLi}>
@@ -108,12 +108,12 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                         <p className={phover} onClick={() => click("annet")}>Annet</p>
                     </li>
                 </ul>
-                <div className="font-['Albert_Sans'] flex flex-col overflow-y-auto overflow-x-hidden mt-5 mr-7 mb-10">
+                <div className="font-['Albert_Sans'] relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden mt-5 ml-5 mb-20 mr-3">
                     <TableComp data={inputs} rows={rows} setRows={setRows} />
                 </div>
-                <button type="submit" className="font-['Albert_Sans'] mt-auto mb-4 ml-4 rounded-md w-32 h-10 text-xl font-light text-white bg-green-700 ease-in-out duration-500 hover:duration-500 hover:bg-green-500 hover:cursor-pointer">Registrer</button>
+                <button type="submit" className="font-['Albert_Sans'] absolute right-0 bottom-0 mr-2 mb-2 rounded-md w-30 h-10 text-xl font-light text-white bg-green-700 ease-in-out duration-500 hover:duration-500 hover:bg-green-500 hover:cursor-pointer">Registrer</button>
                 {children}
-                <button className="absolute w-7 h-7 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={closeSalg}>X</button>
+                <button className="absolute w-5 h-5 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={closeSalg}>X</button>
             </form>
         </>
     )

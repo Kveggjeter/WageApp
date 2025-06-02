@@ -58,7 +58,7 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
     }
 
     return (
-        <table className="ml-5">
+        <table>
             <thead>
             <tr className="bg-gray-200">
                 <th className="p-2">Produkt</th>
@@ -69,19 +69,19 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
             </thead>
             <tbody>
             {rows.map(row => (
-                <tr key={row.id}>
-                    <td className="pt-3">{row.product}</td>
-                    <td>
-                        <input className="flex self-center"
+                <tr className="border-b-1 border-dotted" key={row.id}>
+                    <td className="border-r-1 border-dashed pt-3">{row.product}</td>
+                    <td className="border-r-1 border-dashed">
+                        <input className="flex justify-self-center"
                             type="checkbox"
                             checked={row.mersalg}
                             onChange={() => handleCheckboxChange(row.id, "mersalg")}
                             />
                     </td>
-                    <td>{row.isLiv ? (
-                        <span>Sum:</span>
+                    <td className="border-r-1 border-dashed">{row.isLiv ? (
+                        <span className="flex justify-self-center">Sum:</span>
                     ) : (
-                            <input className="flex self-center"
+                            <input className="flex justify-self-center"
                                 type="checkbox"
                                 checked={row.ekstra}
                                 onChange={() => handleCheckboxChange(row.id, "ekstra")}
@@ -90,12 +90,12 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
                     </td>
                     <td>
                         {row.isLiv ? (
-                            <input className="flex self-center"
+                            <input className="flex justify-self-center"
                                 type="number"
                                 placeholder="Salgssum"
                                 onChange={(e) => handleLifeBoxChange(row.id, e.target.value)}
                             />
-                        ) : ( <input className="flex self-center"
+                        ) : ( <input className="flex justify-self-center"
                             type="checkbox"
                             checked={row.maskinskade}
                             onChange={() => handleCheckboxChange(row.id, "maskinskade")}
@@ -103,7 +103,7 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
                         /> )}
                     </td>
                     <td>
-                        <button className="w-5 h-5 text-[18px] text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={() => handleLineRemoval(row.id, row.product)}>X</button>
+                        <button className="w-5 h-5 text-[18px] text-center leading-none items-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={() => handleLineRemoval(row.id, row.product)}>X</button>
                     </td>
                 </tr>
             ))}
