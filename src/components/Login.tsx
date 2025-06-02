@@ -1,4 +1,4 @@
-import tryg from "../assets/images/tryg.png";
+import nb from "../assets/images/nb.png";
 import livboye from "../assets/images/livboye.jpg"
 import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
@@ -50,8 +50,8 @@ export function Login() {
         )}
         <div className="flex items-center justify-center w-screen h-screen font-[Verdana] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
             <div className="flex relative item-center flex-col w-116 h-auto rounded bg-white font-['Albert_Sans'] shadow">
-                <div className="self-start pt-20 pb-10 pl-20 w-10/12">
-                    <img className="w-36 self-start" alt="tryg" src={tryg} />
+                <img className="w-50 flex self-center" alt="nb" src={nb} />
+                <div className="self-start pb-10 pl-20 w-10/12">
                     <h2 className="text-2xl font-light pt-4 pb-2">Logg inn</h2>
                     <div className="flex gap-5 flex-col">
                         <input

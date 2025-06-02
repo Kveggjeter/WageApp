@@ -50,7 +50,8 @@ export function Dash() {
     useEffect(() => {
         const calculateWages = async () => {
             try {
-                const result = await MakeWage({ tabell });
+                if (!uid) return;
+                const result = await MakeWage({ tabell, uid });
                 setWages(result);
                 console.log("Calculated wages:", result);
             } catch (e) {

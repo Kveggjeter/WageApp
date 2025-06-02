@@ -1,8 +1,9 @@
-import tryg from "../assets/images/tryg.png";
+import nb from "../assets/images/nb.png";
 import livboye from "../assets/images/livboye.jpg"
 import React, { useState } from "react";
 import { doCreateUserWithEmailAndPassword } from "../firebase/auth";
 import { useAuth } from "../contexts/authContext";
+import { CreateUser } from "../firebase/firestore";
 import {Link, Navigate} from "react-router-dom";
 
 export function Signup() {
@@ -12,6 +13,7 @@ export function Signup() {
     const [lastName, setLastName]   = useState("");
     const [email, setEmail]         = useState("");
     const [password, setPassword]   = useState("");
+    const [office, setOffice] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [repeatPassword, setRepeatPassword] = useState("");
     const inputStyle = "border-b-2 border-gray-400 text.lg pb-2 w-full font-[200] placeholder:font-['Albert_Sans'] placeholder:font-light focus:outline-none focus:bg-white";
@@ -28,8 +30,15 @@ export function Signup() {
         }
 
         try {
-            await doCreateUserWithEmailAndPassword(email, password);
-
+            const userCredential = await doCreateUserWithEmailAndPassword(email, password);
+            const uid = userCredential.user.uid;
+            const officeState = () => { 
+                if(office === "true")
+                    return true;
+                else return false;
+              };
+            await CreateUser(uid!, email, firstName, lastName, officeState())
+            
         } catch (error: unknown) {
             if (error instanceof Error) {
                 setErrorMessage(error.message);
@@ -54,8 +63,8 @@ export function Signup() {
             )}
         <div className="flex items-center justify-center w-screen h-screen font-[Verdana] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
             <div className="flex relative item-center flex-col w-116 h-auto rounded bg-white font-['Albert_Sans'] shadow">
-                <div className="self-start pt-20 pb-10 pl-20 w-10/12">
-                    <img className="w-36 self-start" alt="tryg" src={tryg} />
+                <img className="w-50 flex self-center" alt="nb" src={nb} />
+                <div className="self-start pb-10 pl-20 w-10/12">
                         <h2 className="text-2xl font-light pt-4 pb-2">Lag bruker</h2>
                         <div className="flex gap-5 flex-col">
                             <input
@@ -104,6 +113,23 @@ export function Signup() {
                                     value={repeatPassword}
                                     onChange={(e) => setRepeatPassword(e.target.value)}
                                 />
+                            </div>
+                            <div className="flex flex-row justify-center gap-2">
+                                <label>Porsgrunn</label>
+                                <input
+                                    type="radio"
+                                    name="office"
+                                    value="true"
+                                    onChange={(e) => setOffice(e.target.value)}
+                                    required
+                                    />
+                                <label className="ml-6">Stathelle</label>
+                                <input
+                                    name="office"
+                                    type="radio"
+                                    value="false"
+                                    onChange={(e) => setOffice(e.target.value)}
+                                    />
                             </div>
                         </div>
                         {errorMessage && (

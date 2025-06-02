@@ -2,18 +2,23 @@ import {collection, doc, getDoc, getDocs, setDoc, updateDoc} from "firebase/fire
 import {db} from "./firebase.ts";
 
 
-export async function GetCommision(): Promise<Map<string, number>> {
-
-    const docRef = doc(db, "commisions", "coms");
-    const docSnap = await getDoc(docRef);
+export async function GetCommision(uid: string): Promise<Map<string, number>> {
     let em = new Map<string, number>();
-    if (docSnap.exists()) {
-        em = new Map(Object.entries(docSnap.data()));
-        return em;
-    } else {
-        console.log("Dette dokket finnes ikke kompis!");
-        return em;
+    const officeRef = (await getDoc(doc(db, "users", uid)));
+    if (officeRef.exists()) {
+        const office: boolean = officeRef.data().office;
+        const prov = office ? "coms" : "stathelle";
+        const docRef = doc(db, "commisions", prov);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            em = new Map(Object.entries(docSnap.data()));
+            return em;
+        } else {
+            console.log("Dette dokket finnes ikke kompis!");
+            return em;
+        }
     }
+    return em;
 }
 
 export async function GetWages(uid: string, year: number, month: string) {
@@ -39,7 +44,19 @@ async function GetWage(uid: string, year: number, month: string) {
     } catch (e) {
         console.error(e + " catch i GetWage");
     }
+}
 
+export async function CreateUser(uid: string, email: string, fname: string, lname: string, office: boolean) {
+    const userDoc = await getDoc(doc(db, "users", uid))
+
+    if (!userDoc.exists()) {
+        await setDoc(doc(db, 'users', uid), {
+            email: email,
+            firstName: fname,
+            lastName: lname,
+            office: office
+        });
+    }
 }
 
 async function CreateColl(uid: string, year: number, month: string) {
