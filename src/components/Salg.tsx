@@ -7,7 +7,7 @@ import annet from "../assets/images/nliprivat_24.gif";
 import nordea from "../assets/images/nordealogo_24.gif";
 import reise from "../assets/images/reise_24.gif";
 import Produkter from "./Produkter.tsx";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Sak from "../feature/sak.ts";
 import { SalgProp } from "../assets/type/SalgProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
@@ -24,6 +24,8 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
 
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
+    const [customerName, setCustomerName] = useState("");
+    const [isNameSet, setNameSet] = useState(false);
     const { inputs } = useProdex();
     const [rows, setRows] = useState<RowData[]>([]);
     const { year } = UseYear();
@@ -43,10 +45,10 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         setSal(saker);
         setShowProd(true);
     }
-
-
+    // legge til kundeogsånt her seinereeee
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
+        console.log("HER ER KUNDEN: " + customerName)
         setIsLoading(true);
         const uni = new MapUnique();
         const combined = rows.map((r) => {
@@ -55,8 +57,9 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                     ...r,
                     product: r.isLiv? "Liv": r.product
                 };
-            }
+            }      
             return r;
+            
         });
 
         const res = UniqueAdd(combined);
@@ -110,6 +113,10 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                 </ul>
                 <div className="font-['Albert_Sans'] relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden mt-5 ml-5 mb-20 mr-3">
                     <TableComp data={inputs} rows={rows} setRows={setRows} />
+                </div>
+                <div className="absolute right-0 bottom-0 mr-[20%] mb-3">
+                <label className="font-['Albert_Sans'] mr-5">Kundes navn</label>
+                <input type="text" placeholder="f.eks fornavn" onChange={(e) => setCustomerName(e.target.value)} className="border-1 border-black h-8 rounded-md"></input>
                 </div>
                 <button type="submit" className="font-['Albert_Sans'] absolute right-0 bottom-0 mr-2 mb-2 rounded-md w-30 h-10 text-xl font-light text-white bg-green-700 ease-in-out duration-500 hover:duration-500 hover:bg-green-500 hover:cursor-pointer">Registrer</button>
                 {children}
