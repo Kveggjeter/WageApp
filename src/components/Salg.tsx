@@ -7,7 +7,7 @@ import annet from "../assets/images/nliprivat_24.gif";
 import nordea from "../assets/images/nordealogo_24.gif";
 import reise from "../assets/images/reise_24.gif";
 import Produkter from "./Produkter.tsx";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Sak from "../feature/sak.ts";
 import { SalgProp } from "../assets/type/SalgProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
@@ -25,7 +25,6 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
     const [customerName, setCustomerName] = useState("");
-    const [isNameSet, setNameSet] = useState(false);
     const { inputs } = useProdex();
     const [rows, setRows] = useState<RowData[]>([]);
     const { year } = UseYear();
@@ -49,6 +48,10 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
         console.log("HER ER KUNDEN: " + customerName)
+        if(customerName === "") {
+            window.alert("Du må legge ved navn på kunde før du kan registrere salget ditt.");
+            return;
+        }
         setIsLoading(true);
         const uni = new MapUnique();
         const combined = rows.map((r) => {
@@ -68,7 +71,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         produkt = uni.navn(produkt, true)
         mersalg = uni.navn(mersalg, false)
 
-        if(uid && year && month) await AddCommision(uid, year, month, produkt, mersalg);
+        if(uid && year && month) await AddCommision(customerName, uid, year, month, produkt, mersalg);
         setIsLoading(false);
         closeSalg();
 

@@ -62,10 +62,28 @@ export async function CreateUser(uid: string, email: string, fname: string, lnam
 async function CreateColl(uid: string, year: number, month: string) {
     console.log("forsøker å lage dokument.. ");
     await setDoc(doc(db, uid, `${year}-${month}`), {});
-    
 }
 
-export async function AddCommision(uid: string, year: number, month: string, produkt: Map<string, number>, mersalg: Map<string, number>)  {
+async function CreateCustomerColl(uid: string, year: number, month: string) {
+    console.log("forsøker å legge til kunde..");
+    await setDoc(doc(db, uid, `Kunder-${year}-${month}`), {});
+}
+
+async function GetCustomerMonth(uid: string, year: number, month: string) {
+    try {
+        const colRef = await getDocs(collection(db, uid));
+        const colSnap = await getDoc(doc(db, uid, `Kunder-${year}-${month}`));
+        if (colRef.empty  || !colSnap.exists()) {
+            CreateCustomerColl(uid, year, month);
+        }
+        return colSnap;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+
+export async function AddCommision(customer: string, uid: string, year: number, month: string, produkt: Map<string, number>, mersalg: Map<string, number>)  {
 
     try {
         const docSnap = await GetWage(uid, year, month);
@@ -91,11 +109,36 @@ export async function AddCommision(uid: string, year: number, month: string, pro
 
         await updateDoc(docRef, docData);
 
+        const customerSnap = await GetCustomerMonth(uid, year, month);
+        if (!customerSnap) {
+            console.error("Kunne ikke hente dokumentet - docSnap er null/undefined");
+            return;
+        }
+
+        const customerRef = customerSnap.ref;
+        const customerData = customerSnap.data() || {};
+
+        for (const [key, newValue] of produkt.entries()) {
+            if (newValue <= 0) continue;
+            const existingValue = customerData[key] || 0;
+            customerData[key] = existingValue + newValue;
+        }
+
+        for (const [key, newValue] of mersalg.entries()) {
+            if (newValue <= 0) continue;
+            const existingValue = customerData[key] || 0;
+            customerData[key] = existingValue + newValue;
+        }
+
+        customerData["customer"] = customer;
+        await updateDoc(customerRef, customerData);
+
     } catch (e) {
         console.error(e + " catch i AddCommision");
     }
 
 }
+
 
 export async function RemoveCommision(uid: string, year: number, month: string, list: Map<string, number>) {
     try {

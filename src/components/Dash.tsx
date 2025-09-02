@@ -21,6 +21,8 @@ export function Dash() {
     const { year, setYear } = UseYear();
     const { month, setMonth } = UseMonth();
     const { uid } = useAuth();
+    // boks er laget, legge inn resterende piss
+    const [customer, setCustomer] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
     const monthBtn = "bg-white text-center w-full h-7 font-['Albert_Sans'] text-2xl font-light shadow hover:bg-gray-100";
@@ -115,8 +117,8 @@ export function Dash() {
             )}
         <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
             <RemoveSalg showRemove={showRemove} closeRemove={() => { setShowRemove(false); setInputs({}); setRefresh(prev => prev +1); }} children={undefined}/>
-            <div className="flex justify-between items-center pl-10 pr-10 gap-13 max-w-screen min-w-screen max-h-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
-                <div className="relative flex flex-col mb-13 mt-13 pr-2 pl-2 item-center w-42 max-h-screen rounded bg-white/50 backdrop-blur-sm shadow font-['Albert_Sans']">
+            <div className="flex justify-between pl-10 pr-10 gap-13 max-w-screen min-w-screen max-h-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
+                <div className="relative flex-col mb-13 mt-13 pr-2 pl-2 item-center w-42 max-h-screen rounded bg-white/50 backdrop-blur-sm shadow font-['Albert_Sans']">
                     <div className="relative w-full inline-block group pt-5">
                         <button className="border-none bg-white w-[90%] h-[35px] mx-[5%] font-['Albert_Sans'] text-[20px] font-light shadow-md hover:bg-gray-200 transition">{year} {'\u{2BC6}'}</button>
                         <div className="absolute hidden bg-[#f1f1f1] max-h-[80px] overflow-y-auto min-w-[170px] max-w-[170px] shadow-lg z-10 group-hover:block text-center">
@@ -141,7 +143,7 @@ export function Dash() {
                         <button className={monthBtn} id="desember" onClick={() => mclick(11)}>Desember</button>
                     </div>
                 </div>
-                    <div className="flex gap-2 pl-4 pb-7 max-h-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
+                    <div className="flex self-center pl-4 pb-7 max-h-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
                         <div className="flex flex-col self-start">
                             <h2 className="text-2xl w-full pt-4 pb-1 border-b-2 border-grey-200 mb-2">{year} {month}</h2>
                                 <MainTable getValue={getValue} getCount={getCount} />
@@ -194,14 +196,22 @@ export function Dash() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex mb-auto">
-                <button className="shadow min-w-30 mt-5 leading-none pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
+                    <div className="flex flex-col items-center">
+                <button className="shadow min-w-30 max-w-30 mt-5 leading-none pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
                         onClick={() => {
                             doSignOut().then(() => {
                                 navigate('/')
                             })
                         }}>Logg ut</button>
+                        <div className="flex mt-auto mb-auto shadow bg-white rounded-r-sm h-70 w-50 p-2">
+                            <p className="h-max w-full border-b border-black text-xl font-['Albert_Sans']">Kunder</p>
+                            <div className="flex">
+                                <ul className="self-center font-light font-['Albert_Sans'] overflow-y-auto overflow-x-hidden p-10 mb-10">
+
+                                </ul>
+                            </div>
                         </div>
+            </div>
             </div>
         </>
     )
