@@ -1,7 +1,6 @@
 import {collection, doc, getDoc, getDocs, setDoc, updateDoc} from "firebase/firestore";
 import {db} from "./firebase.ts";
 
-
 export async function GetCommision(uid: string): Promise<Map<string, number>> {
     let em = new Map<string, number>();
     const officeRef = (await getDoc(doc(db, "users", uid)));
@@ -19,6 +18,30 @@ export async function GetCommision(uid: string): Promise<Map<string, number>> {
         }
     }
     return em;
+}
+
+export async function GetCustomers(uid: string, year: number, month: string) {
+    try {
+        const monthRef = collection(db, uid, "Kunder", `Kunder-${year}-${month}`);
+        const snap = await getDocs(monthRef);
+
+        if (snap.empty) {
+            console.log("Ingen kunder funnet for denne måneden.");
+            return;
+        }
+
+        const customersMap: { [key: string]: object } = {};
+        snap.forEach(doc => {
+            customersMap[doc.id] = doc.data();
+        });
+
+        return customersMap;
+
+    }catch(e) {
+        console.error(e + "Ingen kunder enda");
+        return [];
+    }
+
 }
 
 export async function GetWages(uid: string, year: number, month: string) {
@@ -64,17 +87,12 @@ async function CreateColl(uid: string, year: number, month: string) {
     await setDoc(doc(db, uid, `${year}-${month}`), {});
 }
 
-async function CreateCustomerColl(uid: string, year: number, month: string) {
-    console.log("forsøker å legge til kunde..");
-    await setDoc(doc(db, uid, `Kunder-${year}-${month}`), {});
-}
 
-async function GetCustomerMonth(uid: string, year: number, month: string) {
+async function GetCustomerMonth(uid: string) {
     try {
-        const colRef = await getDocs(collection(db, uid));
-        const colSnap = await getDoc(doc(db, uid, `Kunder-${year}-${month}`));
-        if (colRef.empty  || !colSnap.exists()) {
-            CreateCustomerColl(uid, year, month);
+        const colSnap = await getDoc(doc(db, uid, `Kunder`));
+        if (!colSnap.exists()) {
+            console.log("Ikke stort å gjøre gitt");
         }
         return colSnap;
     } catch (e) {
@@ -109,13 +127,11 @@ export async function AddCommision(customer: string, uid: string, year: number, 
 
         await updateDoc(docRef, docData);
 
-        const customerSnap = await GetCustomerMonth(uid, year, month);
+        const customerSnap = await GetCustomerMonth(uid);
         if (!customerSnap) {
             console.error("Kunne ikke hente dokumentet - docSnap er null/undefined");
             return;
         }
-
-        const customerRef = customerSnap.ref;
         const customerData = customerSnap.data() || {};
 
         for (const [key, newValue] of produkt.entries()) {
@@ -130,15 +146,11 @@ export async function AddCommision(customer: string, uid: string, year: number, 
             customerData[key] = existingValue + newValue;
         }
 
-        customerData["customer"] = customer;
-        await updateDoc(customerRef, customerData);
-
+        await setDoc(doc(db, uid, 'Kunder', `Kunder-${year}-${month}`, customer), customerData);
     } catch (e) {
         console.error(e + " catch i AddCommision");
     }
-
 }
-
 
 export async function RemoveCommision(uid: string, year: number, month: string, list: Map<string, number>) {
     try {

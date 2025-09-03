@@ -16,8 +16,9 @@ import {RowData} from "../assets/type/TableProp.ts";
 import {AddCommision} from "../firebase/firestore.ts";
 import {UniqueAdd} from "../feature/UniqueAdd.tsx";
 import MapUnique from "../feature/MapUnique.ts";
-import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
+import {UseDay, UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {useAuth} from "../contexts/authContext";
+import {KalenderNorsk} from "../contexts/calendar/NorskKalender.ts";
 
 
 export function Salg({ showSalg, closeSalg, children }: SalgProp) {
@@ -29,6 +30,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const [rows, setRows] = useState<RowData[]>([]);
     const { year } = UseYear();
     const { month } = UseMonth();
+    const { day } = UseDay();
     const { uid } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const imgBulkImg = "w-6 h-6";
@@ -68,10 +70,17 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         const res = UniqueAdd(combined);
         let produkt: Map<string, number> = res.produkt;
         let mersalg: Map<string, number> = res.mersalg;
-        produkt = uni.navn(produkt, true)
-        mersalg = uni.navn(mersalg, false)
-
-        if(uid && year && month) await AddCommision(customerName, uid, year, month, produkt, mersalg);
+        produkt = uni.navn(produkt, true);
+        mersalg = uni.navn(mersalg, false);
+        const ekteMonth: number = KalenderNorsk(month);
+        let ekteDay;
+        if (typeof day != "undefined") {
+            if (day < 10) ekteDay = "0" + day;
+        } else ekteDay = day;
+        let realMonth: string = ekteMonth.toString();
+        if (ekteMonth < 10) realMonth = "0" + realMonth;
+        const customerNameWithDate = ekteDay + "." + realMonth + "-" + customerName.charAt(0).toUpperCase() + customerName.slice(1);
+        if(uid && year && month) await AddCommision(customerNameWithDate, uid, year, month, produkt, mersalg);
         setIsLoading(false);
         closeSalg();
 

@@ -6,7 +6,7 @@ import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {NorskKalender} from "../contexts/calendar/NorskKalender.ts";
 import {useAuth} from "../contexts/authContext";
-import {GetWages} from "../firebase/firestore.ts";
+import {GetCustomers, GetWages} from "../firebase/firestore.ts";
 import MainTable from "./MainTable.tsx";
 import {MakeWage} from "../feature/MakeWage.ts";
 import livboye from "../assets/images/livboye.jpg";
@@ -21,8 +21,7 @@ export function Dash() {
     const { year, setYear } = UseYear();
     const { month, setMonth } = UseMonth();
     const { uid } = useAuth();
-    // boks er laget, legge inn resterende piss
-    const [customer, setCustomer] = useState();
+    const [customer, setCustomer] = useState<{ [key: string]: object } | never [] | undefined>({});
     const [isLoading, setIsLoading] = useState(false);
     const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
     const monthBtn = "bg-white text-center w-full h-7 font-['Albert_Sans'] text-2xl font-light shadow hover:bg-gray-100";
@@ -37,11 +36,14 @@ export function Dash() {
             try {
                 setIsLoading(true);
                 const data = await GetWages(uid, year, month);
+                const customers:{[key:string]:object} | never[] | undefined = await GetCustomers(uid, year, month);
+                if (customers) setCustomer(customers);
                 if (data) setTabell(data);
                 else setTabell({});
             } catch (error) {
                 console.error("Feil ved lasting av tabell:", error);
                 setTabell({});
+                setCustomer({});
             } finally {
                 setIsLoading(false);
             }
@@ -203,11 +205,22 @@ export function Dash() {
                                 navigate('/')
                             })
                         }}>Logg ut</button>
-                        <div className="flex mt-auto mb-auto shadow bg-white rounded-r-sm h-70 w-50 p-2">
+                        <div className="flex flex-col mt-auto mb-auto shadow bg-white rounded-r-sm h-70 w-50 p-2">
                             <p className="h-max w-full border-b border-black text-xl font-['Albert_Sans']">Kunder</p>
-                            <div className="flex">
-                                <ul className="self-center font-light font-['Albert_Sans'] overflow-y-auto overflow-x-hidden p-10 mb-10">
-
+                            <div className="flex items-center justify-center h-full w-full">
+                                <ul className="flex flex-col h-full w-full font-light font-['Albert_Sans'] overflow-y-auto overflow-x-hidden">
+                                    {customer && Object.entries(customer).map(([key, value], index) => (
+                                        <li key={index} className="mb-4 group relative cursor-pointer">
+                                            <span>{key}</span>
+                                            <div className="absolute top-0 ml-13 w-max p-2 rounded bg-gray-200 text-sm text-black opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
+                                                {Object.entries(value).map(([fieldKey, fieldValue]) => (
+                                                    <div key={fieldKey}>
+                                                        <strong>{fieldKey}:</strong> {String(fieldValue)}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </li>
+                                    ))}
                                 </ul>
                             </div>
                         </div>
