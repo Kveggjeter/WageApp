@@ -11,13 +11,16 @@ import MainTable from "./MainTable.tsx";
 import {MakeWage} from "../feature/MakeWage.ts";
 import livboye from "../assets/images/livboye.jpg";
 import {RemoveSalg} from "./RemoveSalg.tsx";
+import {PrivateObject} from "../assets/type/PrivateObject.ts";
+import {UseShowRemove, UseShowSalg} from "../contexts/windowContext/privSaleContext.tsx";
+import PrivateDash from "./PrivateDash.tsx";
 
 export function Dash() {
     const {setInputs} = useProdex();
     const [ refresh, setRefresh ] = useState(0);
     const navigate = useNavigate();
-    const [ showSalg, setShowSalg ] = useState(false);
-    const [ showRemove, setShowRemove ] = useState(false);
+    const { showSalg, setShowSalg } = UseShowSalg();
+    const { showRemove, setShowRemove } = UseShowRemove();
     const { year, setYear } = UseYear();
     const { month, setMonth } = UseMonth();
     const { uid } = useAuth();
@@ -34,6 +37,7 @@ export function Dash() {
             if (!uid || !year || !month) return;
 
             try {
+                setCustomer({});
                 setIsLoading(true);
                 const data = await GetWages(uid, year, month);
                 const customers:{[key:string]:object} | never[] | undefined = await GetCustomers(uid, year, month);
@@ -102,6 +106,14 @@ export function Dash() {
 
     const totalProv: number = skadeProv + hpBonusSum + femmern + livProv;
 
+    const privatSalg = new PrivateObject(
+        {getValue, getCount,
+            hpBonus, totalLiv,
+            husTotal, bilTotal,
+            hppTotal, hpTotal,
+            skadeProv, livProv, totalProv,
+        year, month});
+
     function click (value: number) {
         setYear(value);
     }
@@ -146,57 +158,7 @@ export function Dash() {
                     </div>
                 </div>
                     <div className="flex self-center pl-4 pb-7 max-h-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
-                        <div className="flex flex-col self-start">
-                            <h2 className="text-2xl w-full pt-4 pb-1 border-b-2 border-grey-200 mb-2">{year} {month}</h2>
-                                <MainTable getValue={getValue} getCount={getCount} />
-                        </div>
-                        <div className="flex flex-col text-center ">
-                            <div className="flex flex-col self-center gap-6 mt-7 p-2 font-['Albert_Sans'] text-xl font-light md:max-xl:flex-col md:max-xl:max-w-30 md:max-xl:self-center">
-                                <div className="flex-1 md:max-xl:border-r-0 md:max-xl:pb-2 md:max-xl:mb-2 md:max-xl:max-w-30">
-                                    <h3 className="hpBonus">HP bonus</h3>
-                                    <h2 className="text-3xl">{hpBonus}/23</h2>
-                                </div>
-                                <div className="flex-1 md:max-xl:max-w-30">
-                                    <h3 id="sgNor">Salgsum Nordea</h3>
-                                    <h2 className="text-3xl">{numClean(totalLiv)} NOK</h2>
-                                </div>
-                            </div>
-                            <div className="flex gap-2 mt-auto ml-2 mr-4 font-['Albert_Sans'] rounded-lg">
-                                <button
-                                    className="max-w-full pl-2 pr-2 text-center leading-none h-8 text-center text-lg font-light text-white bg-green-600 ease-in-out duration-600 hover:cursor-pointer hover:bg-green-500 hover:ease-in-out hover:duration-500"
-                                    id="addSale"
-                                    onClick={()=>setShowSalg(true)}
-                                    >Salg</button>
-                                <button className="max-w-full pl-2 pr-2 h-8 leading-none text-white italic text-lg font-extralight bg-red-800 duration-500 ease-in-out hover:cursor-pointer hover:bg-red-700 hover:ease-in-out hover:duration-500"
-                                id="removeSale"
-                                        onClick={()=>setShowRemove(true)}
-                                >Fjern salg</button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col pr-5 items-end mt-5 text-center">
-                            <div className="flex flex-col justify-center items-center border-b-3 border-gray-200">
-                                <div className="font-['Albert_Sans'] font-light text-xl flex flex-row justify-center gap-2">
-                                    <h3 id="hpHus">{husTotal} Hus</h3>
-                                    <h3 id="hpBil">{bilTotal} Bil</h3>
-                                    <h3 id="hphpp">{hppTotal} HPP</h3>
-                                </div>
-                                <div className="text-4xl mt-2">
-                                    <h1 id="totalHp">{hpTotal}</h1>
-                                </div>
-                            </div>
-                            <div className="mb-7 border-b-3 border-gray-200">
-                                <h3 id="provSkade">Provisjon skade</h3>
-                                <h1 className="text-4xl" id="salgSkadeSum">{numClean(~~skadeProv)}NOK</h1>
-                            </div>
-                            <div className="mb-7 border-b-3 border-gray-200">
-                                <h3 id="provLiv">Provisjon Nordea</h3>
-                                <h1 className="text-4xl" id="salgLivSum">{numClean(~~livProv)}</h1>
-                            </div>
-                            <div className="mt-auto mb-2 border-b-5 border-black">
-                                <h3 id="totalProvSum">Total provisjon</h3>
-                                <h1 className="text-5xl font-semibold" id="totalProvSalgSum">{numClean(totalProv)}NOK</h1>
-                            </div>
-                        </div>
+                        <PrivateDash {...privatSalg}></PrivateDash>
                     </div>
                     <div className="flex flex-col items-center">
                 <button className="shadow min-w-30 max-w-30 mt-5 leading-none pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"

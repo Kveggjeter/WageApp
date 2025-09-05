@@ -2,8 +2,6 @@ import {RowData, TableProp} from "../assets/type/TableProp.ts";
 import {useEffect} from "react";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 
-
-
 const TableComp = ({ data, rows, setRows}: TableProp) => {
 
  const entries = Object.entries(data);
