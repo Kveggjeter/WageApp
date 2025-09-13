@@ -1,8 +1,8 @@
 import {NamesForProduct} from "./NamesForProduct.ts";
 
-class Sak extends NamesForProduct {
+class PrivatSak extends NamesForProduct {
 
-    sak(s: string) {
+    privSak(s: string) {
         switch (s) {
             case "hus":
                 return this.h;
@@ -26,4 +26,4 @@ class Sak extends NamesForProduct {
     }
 }
 
-export default Sak;
+export default PrivatSak;

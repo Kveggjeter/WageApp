@@ -3,13 +3,28 @@ import App from "./App.tsx";
 import {AuthProvider} from "./contexts/authContext";
 import {ProdexProvider} from "./contexts/productContext/Prodex.tsx";
 import {DayProvider, MonthProvider, YearProvider} from "./contexts/calendar/CalendarContext.tsx";
-import {ShowRemoveProvider, ShowSalgProvider} from "./contexts/windowContext/privSaleContext.tsx";
+import {
+    ShowCoorpCreateRemoveProvider,
+    ShowCoorpCreateSalesProvider,
+    ShowPrivCreateRemoveProvider,
+    ShowPrivCreateSalesProvider
+} from "./contexts/windowContext/privSaleContext.tsx";
+import {
+    ShowAllSaleProvider,
+    ShowCoorpSaleProvider,
+    ShowPrivateSaleProvider
+} from "./contexts/windowContext/typeOfDash.tsx";
 
 createRoot(document.getElementById('root')!).render(
 
       <ProdexProvider>
-          <ShowSalgProvider>
-              <ShowRemoveProvider>
+          <ShowPrivateSaleProvider>
+              <ShowCoorpSaleProvider>
+                  <ShowAllSaleProvider>
+          <ShowPrivCreateSalesProvider>
+              <ShowPrivCreateRemoveProvider>
+                  <ShowCoorpCreateSalesProvider>
+                      <ShowCoorpCreateRemoveProvider>
             <AuthProvider>
                 <YearProvider>
                     <MonthProvider>
@@ -19,8 +34,13 @@ createRoot(document.getElementById('root')!).render(
                     </MonthProvider>
                 </YearProvider>
             </AuthProvider>
-              </ShowRemoveProvider>
-          </ShowSalgProvider>
+                      </ShowCoorpCreateRemoveProvider>
+                  </ShowCoorpCreateSalesProvider>
+              </ShowPrivCreateRemoveProvider>
+          </ShowPrivCreateSalesProvider>
+                  </ShowAllSaleProvider>
+              </ShowCoorpSaleProvider>
+              </ShowPrivateSaleProvider>
       </ProdexProvider>
 
 )

@@ -8,10 +8,10 @@ import nordea from "../assets/images/nordealogo_24.gif";
 import reise from "../assets/images/reise_24.gif";
 import Produkter from "./Produkter.tsx";
 import React, {useState} from "react";
-import Sak from "../feature/sak.ts";
-import { SalgProp } from "../assets/type/SalgProp.ts";
+import PrivatSak from "../feature/privatSak.ts";
+import { PrivSaleWindowProp } from "../assets/type/PrivSaleWindowProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
-import TableComp from "./TableComp.tsx";
+import PrivateCreateTableComp from "./PrivateCreateTableComp.tsx";
 import {RowData} from "../assets/type/TableProp.ts";
 import {AddCommision} from "../firebase/firestore.ts";
 import {UniqueAdd} from "../feature/UniqueAdd.tsx";
@@ -21,7 +21,7 @@ import {useAuth} from "../contexts/authContext";
 import {KalenderNorsk} from "../contexts/calendar/NorskKalender.ts";
 
 
-export function Salg({ showSalg, closeSalg, children }: SalgProp) {
+export function CreatePrivSale({ showPrivSaleWindow, closePrivSale, children }: PrivSaleWindowProp) {
 
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
@@ -37,11 +37,11 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
     const listLi = "font-['Albert_Sans'] font-light items-center gap-2"
     const phover = "hover:cursor-pointer hover:text-green-500"
 
-    if (!showSalg) {return null}
+    if (!showPrivSaleWindow) {return null}
 
     function click(value: string) {
-        const sak = new Sak();
-        const saker: string[] | null = sak.sak(value);
+        const sak = new PrivatSak();
+        const saker: string[] | null = sak.privSak(value);
         setSal(null);
         setSal(saker);
         setShowProd(true);
@@ -82,7 +82,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
         const customerNameWithDate = ekteDay + "." + realMonth + "-" + customerName.charAt(0).toUpperCase() + customerName.slice(1);
         if(uid && year && month) await AddCommision(customerNameWithDate, uid, year, month, produkt, mersalg);
         setIsLoading(false);
-        closeSalg();
+        closePrivSale();
 
     }
 
@@ -124,7 +124,7 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                     </li>
                 </ul>
                 <div className="font-['Albert_Sans'] relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden mt-5 ml-5 mb-20 mr-3">
-                    <TableComp data={inputs} rows={rows} setRows={setRows} />
+                    <PrivateCreateTableComp data={inputs} rows={rows} setRows={setRows} />
                 </div>
                 <div className="absolute right-0 bottom-0 mr-[20%] mb-3">
                 <label className="font-['Albert_Sans'] mr-5">Kundes navn</label>
@@ -132,10 +132,10 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                 </div>
                 <button type="submit" className="font-['Albert_Sans'] absolute right-0 bottom-0 mr-2 mb-2 rounded-md w-30 h-10 text-xl font-light text-white bg-green-700 ease-in-out duration-500 hover:duration-500 hover:bg-green-500 hover:cursor-pointer">Registrer</button>
                 {children}
-                <button className="absolute w-5 h-5 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={closeSalg}>X</button>
+                <button className="absolute w-5 h-5 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={closePrivSale}>X</button>
             </form>
         </>
     )
 }
 
-export default Salg;
+export default CreatePrivSale;

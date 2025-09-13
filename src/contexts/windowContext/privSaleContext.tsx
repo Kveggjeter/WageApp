@@ -1,40 +1,78 @@
 import React, {createContext, useContext, useState} from "react";
-import {ShowSalgProps} from "../../assets/type/ShowSalgProps.ts";
-import {ShowRemoveProps} from "../../assets/type/ShowRemoveProps.ts";
+import {ShowPrivCreateSalesProps} from "../../assets/type/ShowPrivCreateSalesProps.ts";
+import {ShowPrivCreateRemoveProps} from "../../assets/type/ShowPrivCreateRemoveProps.ts";
+import {ShowCoorpCreateRemoveProps} from "../../assets/type/ShowCoorpCreateRemoveProps.ts";
+import {ShowCoorpCreateSalesProps} from "../../assets/type/ShowCoorpCreateSalesProps.ts";
 
-const ShowSalgContext = createContext<ShowSalgProps>({
-    showSalg: false,
-    setShowSalg: () => {}
+const ShowPrivCreateSalesContext = createContext<ShowPrivCreateSalesProps>({
+    showPrivCreateSale: false,
+    setShowPrivCreateSale: () => {}
 })
-const ShowRemoveContext = createContext<ShowRemoveProps>({
-    showRemove: false,
-    setShowRemove: () => {}
+const ShowPrivCreateRemoveContext = createContext<ShowPrivCreateRemoveProps>({
+    showPrivCreateRemove: false,
+    setShowPrivCreateRemove: () => {}
 })
 
-export function ShowSalgProvider ({ children }: { children: React.ReactNode}) {
-    const [showSalg, setShowSalg] = useState(false);
+const ShowCoorpCreateSalesContext = createContext<ShowCoorpCreateSalesProps>({
+    showCoorpCreateSale: false,
+    setShowCoorpCreateSale: () => {}
+})
+const ShowCoorpCreateRemoveContext = createContext<ShowCoorpCreateRemoveProps>({
+    showCoorpCreateRemove: false,
+    setShowCoorpCreateRemove: () => {}
+})
+
+
+
+export function ShowPrivCreateSalesProvider ({ children }: { children: React.ReactNode}) {
+    const [showPrivCreateSales, setShowPrivCreateSales] = useState(false);
 
     return (
-        <ShowSalgContext.Provider value ={{ showSalg, setShowSalg }}>
+        <ShowPrivCreateSalesContext.Provider value ={{ showPrivCreateSale: showPrivCreateSales, setShowPrivCreateSale: setShowPrivCreateSales }}>
             {children}
-        </ShowSalgContext.Provider>
+        </ShowPrivCreateSalesContext.Provider>
+    )
+}
+export function ShowPrivCreateRemoveProvider ({children}: {children: React.ReactNode}) {
+    const [showPrivCreateRemove, setShowPrivCreateRemove] = useState(false);
+
+    return (
+        <ShowPrivCreateRemoveContext.Provider value={{ showPrivCreateRemove: showPrivCreateRemove, setShowPrivCreateRemove: setShowPrivCreateRemove }}>
+            {children}
+        </ShowPrivCreateRemoveContext.Provider>
     )
 }
 
-export function ShowRemoveProvider ({children}: {children: React.ReactNode}) {
-    const [showRemove, setShowRemove] = useState(false);
+export function ShowCoorpCreateSalesProvider ({ children }: { children: React.ReactNode}) {
+    const [showCoorpCreateSale, setShowCoorpCreateSale] = useState(false);
 
     return (
-        <ShowRemoveContext.Provider value={{ showRemove, setShowRemove }}>
+        <ShowCoorpCreateSalesContext.Provider value ={{ showCoorpCreateSale: showCoorpCreateSale, setShowCoorpCreateSale: setShowCoorpCreateSale }}>
             {children}
-        </ShowRemoveContext.Provider>
+        </ShowCoorpCreateSalesContext.Provider>
+    )
+}
+export function ShowCoorpCreateRemoveProvider ({children}: {children: React.ReactNode}) {
+    const [showCoorpCreateRemove, setShowCoorpCreateRemove] = useState(false);
+
+    return (
+        <ShowCoorpCreateRemoveContext.Provider value={{ showCoorpCreateRemove: showCoorpCreateRemove, setShowCoorpCreateRemove: setShowCoorpCreateRemove }}>
+            {children}
+        </ShowCoorpCreateRemoveContext.Provider>
     )
 }
 
-export function UseShowSalg() {
-    return useContext(ShowSalgContext);
+
+export function UseShowPrivCreateSale() {
+    return useContext(ShowPrivCreateSalesContext);
+}
+export function UseShowPrivCreateRemove() {
+    return useContext(ShowPrivCreateRemoveContext);
 }
 
-export function UseShowRemove() {
-    return useContext(ShowRemoveContext);
+export function UseShowCoorpCreateSale() {
+    return useContext(ShowCoorpCreateSalesContext);
+}
+export function UseShowCoorpCreateRemove() {
+    return useContext(ShowCoorpCreateRemoveContext);
 }

@@ -2,7 +2,7 @@ import {RowData, TableProp} from "../assets/type/TableProp.ts";
 import {useEffect} from "react";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 
-const TableComp = ({ data, rows, setRows}: TableProp) => {
+const PrivateCreateTableComp = ({ data, rows, setRows}: TableProp) => {
 
  const entries = Object.entries(data);
         const newRows: RowData[] = entries.flatMap(([key, val]) => {
@@ -110,4 +110,4 @@ const TableComp = ({ data, rows, setRows}: TableProp) => {
     );
 };
 
-export default TableComp;
+export default PrivateCreateTableComp;

@@ -1,29 +1,43 @@
 import {useEffect, useState} from "react";
 import {doSignOut} from "../firebase/auth.ts";
 import {useNavigate} from "react-router-dom";
-import { Salg } from "../components/Salg.tsx";
+import { CreatePrivSale } from "./CreatePrivSale.tsx";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {NorskKalender} from "../contexts/calendar/NorskKalender.ts";
 import {useAuth} from "../contexts/authContext";
 import {GetCustomers, GetWages} from "../firebase/firestore.ts";
-import MainTable from "./MainTable.tsx";
 import {MakeWage} from "../feature/MakeWage.ts";
 import livboye from "../assets/images/livboye.jpg";
 import {RemoveSalg} from "./RemoveSalg.tsx";
 import {PrivateObject} from "../assets/type/PrivateObject.ts";
-import {UseShowRemove, UseShowSalg} from "../contexts/windowContext/privSaleContext.tsx";
+import {
+    UseShowCoorpCreateRemove,
+    UseShowCoorpCreateSale,
+    UseShowPrivCreateRemove,
+    UseShowPrivCreateSale
+} from "../contexts/windowContext/privSaleContext.tsx";
 import PrivateDash from "./PrivateDash.tsx";
+import {UseShowAllSale, UseShowCoorpSale, UseShowPrivateSale} from "../contexts/windowContext/typeOfDash.tsx";
+import CoorpDash from "./CoorpDash.tsx";
+import AllDash from "./AllDash.tsx";
+import CreateCoorpSale from "./CreateCoorpSale.tsx";
 
 export function Dash() {
     const {setInputs} = useProdex();
     const [ refresh, setRefresh ] = useState(0);
     const navigate = useNavigate();
-    const { showSalg, setShowSalg } = UseShowSalg();
-    const { showRemove, setShowRemove } = UseShowRemove();
+    const { showPrivCreateSale, setShowPrivCreateSale } = UseShowPrivCreateSale();
+    const { showPrivCreateRemove, setShowPrivCreateRemove } = UseShowPrivCreateRemove();
+    const { showCoorpCreateSale, setShowCoorpCreateSale } = UseShowCoorpCreateSale();
+    const { showCoorpCreateRemove, setShowCoorpCreateRemove } = UseShowCoorpCreateRemove();
+    const {showPrivateSale, setShowPrivateSale} = UseShowPrivateSale();
+    const {showCoorpSale, setShowCoorpSale} = UseShowCoorpSale();
+    const {showAllSale, setShowAllSale} = UseShowAllSale();
     const { year, setYear } = UseYear();
     const { month, setMonth } = UseMonth();
     const { uid } = useAuth();
+    const [ tableToShow, setTableToShow ] = useState<number>(0);
     const [customer, setCustomer] = useState<{ [key: string]: object } | never [] | undefined>({});
     const [isLoading, setIsLoading] = useState(false);
     const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
@@ -32,6 +46,29 @@ export function Dash() {
     let res: Map<string, number> = new Map<string, number>();
     res = new Map(Object.entries(tabell));
 
+
+    useEffect(() => {
+       const whatToShow = () => {
+
+           if(tableToShow === 0) {
+               setShowPrivateSale(true);
+               setShowCoorpSale(false);
+               setShowAllSale(false);
+           }
+           else if(tableToShow === 1) {
+               setShowPrivateSale(false);
+               setShowCoorpSale(true);
+               setShowAllSale(false);
+           }
+           else if(tableToShow === 2) {
+               setShowPrivateSale(false);
+               setShowCoorpSale(false);
+               setShowAllSale(true);
+           }
+       };
+       whatToShow();
+    }, [tableToShow, setShowCoorpSale, setShowAllSale, setShowPrivateSale]);
+    
     useEffect(() => {
         const loadTabellData = async () => {
             if (!uid || !year || !month) return;
@@ -121,7 +158,11 @@ export function Dash() {
     function mclick (value: number) {
         setMonth(NorskKalender(value));
     }
-    
+
+    function clickOnTable (value: number) {
+        setTableToShow(value);
+    }
+
     return (
         <>
             {isLoading && (
@@ -129,8 +170,9 @@ export function Dash() {
                     <div className="w-16 h-16 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
                 </div>
             )}
-        <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
-            <RemoveSalg showRemove={showRemove} closeRemove={() => { setShowRemove(false); setInputs({}); setRefresh(prev => prev +1); }} children={undefined}/>
+        <CreatePrivSale showPrivSaleWindow={showPrivCreateSale} closePrivSale={() => { setShowPrivCreateSale(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
+            <RemoveSalg showRemove={showPrivCreateRemove} closeRemove={() => { setShowPrivCreateRemove(false); setInputs({}); setRefresh(prev => prev +1); }} children={undefined}/>
+            <CreateCoorpSale showCoorpSaleWindow={showCoorpCreateSale} closeCoorpSale={() => { setShowCoorpCreateSale(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
             <div className="flex justify-between pl-10 pr-10 gap-13 max-w-screen min-w-screen max-h-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
                 <div className="relative flex-col mb-13 mt-13 pr-2 pl-2 item-center w-42 max-h-screen rounded bg-white/50 backdrop-blur-sm shadow font-['Albert_Sans']">
                     <div className="relative w-full inline-block group pt-5">
@@ -157,8 +199,18 @@ export function Dash() {
                         <button className={monthBtn} id="desember" onClick={() => mclick(11)}>Desember</button>
                     </div>
                 </div>
-                    <div className="flex self-center pl-4 pb-7 max-h-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
+                    <div className="flex flex-col self-center pl-4 pb-7 w-full max-w-3/5 max-h-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
+                        <div className="flex self center min-h-10 w-full bg-red-500">
+                            <button className={`w-full border-2 border-black hover:bg-amber-200 hover:cursor-pointer ${showPrivateSale ? 'bg-blue-400' : ''}`}
+                                    onClick={() => clickOnTable(0)}>Privat</button>
+                            <button className={`w-full border-2 border-black hover:bg-amber-200 hover:cursor-pointer ${showCoorpSale ? 'bg-blue-400' : ''}`}
+                                    onClick={() => clickOnTable(1)}>Bedrift</button>
+                            <button className={`w-full border-2 border-black hover:bg-amber-200 hover:cursor-pointer ${showAllSale ? 'bg-blue-400' : ''}`}
+                                    onClick={() => clickOnTable(2)}>Total</button>
+                        </div>
                         <PrivateDash {...privatSalg}></PrivateDash>
+                        <CoorpDash {...privatSalg}></CoorpDash>
+                        <AllDash {...privatSalg}></AllDash>
                     </div>
                     <div className="flex flex-col items-center">
                 <button className="shadow min-w-30 max-w-30 mt-5 leading-none pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
