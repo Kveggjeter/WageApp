@@ -6,25 +6,27 @@ import nordea from "../assets/images/nordealogo_24.gif";
 import Produkter from "./Produkter.tsx";
 import React, {useState} from "react";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
-import {RowData} from "../assets/type/TableProp.ts";
 import {AddCommision} from "../firebase/firestore.ts";
-import {UniqueAdd} from "../feature/UniqueAdd.tsx";
-import MapUnique from "../feature/MapUnique.ts";
 import {UseDay, UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {useAuth} from "../contexts/authContext";
 import {KalenderNorsk} from "../contexts/calendar/NorskKalender.ts";
 import {CoorpSaleWindowProp} from "../assets/type/CoorpSaleWindowProp.ts";
 import CoorpCreateTableComp from "./CoorpCreateTableComp.tsx";
 import CoorpSak from "../feature/coorpSak.ts";
+import {CoorpCreateSaleRowData} from "../assets/type/CoorpCreateTableProp.ts";
+import {UniqueCoorpAdd} from "../feature/UniqueCoorpAdd.tsx";
+import {CoorpCreateExtraRowData} from "../assets/type/CoorpCreateExtraRowData.ts";
+import GiveProductCorrectCode from "../feature/GiveProductCorrectCode.ts";
 
 
 export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children }: CoorpSaleWindowProp) {
 
+    const [extraRows, setExtraRows] = useState<CoorpCreateExtraRowData[]>([]);
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
     const [customerName, setCustomerName] = useState("");
     const { inputs } = useProdex();
-    const [rows, setRows] = useState<RowData[]>([]);
+    const [rows, setRows] = useState<CoorpCreateSaleRowData[]>([]);
     const { year } = UseYear();
     const { month } = UseMonth();
     const { day } = UseDay();
@@ -36,6 +38,14 @@ export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children 
 
     if (!showCoorpSaleWindow) {return null}
 
+    function resetForm() {
+        setRows([]);
+        setExtraRows([]);
+        setCustomerName("");
+        setSal(null);
+        setShowProd(false);
+    }
+
     function click(value: string) {
         const sak = new CoorpSak();
         const saker: string[] | null = sak.coorpSak(value);
@@ -43,7 +53,7 @@ export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children 
         setSal(saker);
         setShowProd(true);
     }
-    // legge til kundeogsånt her seinereeee
+
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
         console.log("HER ER KUNDEN: " + customerName)
@@ -52,18 +62,18 @@ export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children 
             return;
         }
         setIsLoading(true);
-        const uni = new MapUnique();
-        const combined = rows.map((r) => {
-            return r;
-        });
 
-        const res = UniqueAdd(combined);
-        let produkt: Map<string, number> = res.produkt;
-
-        produkt = uni.navn(produkt, true);
-
-
+        const combined = [
+            ...rows,
+            ...extraRows.filter(row => row.ekstra)
+        ];
+        const res = UniqueCoorpAdd(combined);
+        const converter = new GiveProductCorrectCode();
+        const codeMap = converter.nameAsCodes(combined);
+        codeMap.set("amount", res.get("sum") as number)
+        console.log(codeMap);
         const ekteMonth: number = KalenderNorsk(month);
+
         let ekteDay;
         if (typeof day != "undefined") {
             if (day < 10) ekteDay = "0" + day;
@@ -71,10 +81,11 @@ export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children 
         let realMonth: string = ekteMonth.toString();
         if (ekteMonth < 10) realMonth = "0" + realMonth;
         const customerNameWithDate = ekteDay + "." + realMonth + "-" + customerName.charAt(0).toUpperCase() + customerName.slice(1);
-        if(uid && year && month) await AddCommision(customerNameWithDate, uid, year, month, produkt, produkt);
+
+        if(uid && year && month) await AddCommision(customerNameWithDate, uid, year, month, codeMap, new Map());
         setIsLoading(false);
         closeCoorpSale();
-
+        resetForm();
     }
 
     return (
@@ -112,7 +123,7 @@ export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children 
                 </li>
                 </ul>
                 <div className="font-['Albert_Sans'] relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden mt-5 ml-5 mb-20 mr-3">
-                    <CoorpCreateTableComp data={inputs} rows={rows} setRows={setRows} />
+                    <CoorpCreateTableComp data={inputs} rows={rows} setRows={setRows} extraRows={extraRows} setExtraRows={setExtraRows} />
                 </div>
                 <div className="absolute right-0 bottom-0 mr-[20%] mb-3">
                     <label className="font-['Albert_Sans'] mr-5">Kundes navn</label>
@@ -120,7 +131,7 @@ export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children 
                 </div>
                 <button type="submit" className="font-['Albert_Sans'] absolute right-0 bottom-0 mr-2 mb-2 rounded-md w-30 h-10 text-xl font-light text-white bg-green-700 ease-in-out duration-500 hover:duration-500 hover:bg-green-500 hover:cursor-pointer">Registrer</button>
                 {children}
-                <button className="absolute w-5 h-5 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={closeCoorpSale}>X</button>
+                <button className="absolute w-5 h-5 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={() => {closeCoorpSale(); resetForm()}}>X</button>
             </form>
         </>
     )

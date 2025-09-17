@@ -1,12 +1,30 @@
 import {collection, doc, getDoc, getDocs, setDoc, updateDoc} from "firebase/firestore";
 import {db} from "./firebase.ts";
 
-export async function GetCommision(uid: string): Promise<Map<string, number>> {
+export async function GetPrivCommision(uid: string): Promise<Map<string, number>> {
     let em = new Map<string, number>();
     const officeRef = (await getDoc(doc(db, "users", uid)));
     if (officeRef.exists()) {
         const office: boolean = officeRef.data().office;
         const prov = office ? "coms" : "stathelle";
+        const docRef = doc(db, "commisions", prov);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            em = new Map(Object.entries(docSnap.data()));
+            return em;
+        } else {
+            console.log("Dette dokket finnes ikke kompis!");
+            return em;
+        }
+    }
+    return em;
+}
+
+export async function GetCoorpCommision(uid: string): Promise<Map<string, number>> {
+    let em = new Map<string, number>();
+    const officeRef = (await getDoc(doc(db, "users", uid)));
+    if (officeRef.exists()) {
+        const prov = "coorp";
         const docRef = doc(db, "commisions", prov);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -99,7 +117,6 @@ async function GetCustomerMonth(uid: string) {
         console.error(e);
     }
 }
-
 
 export async function AddCommision(customer: string, uid: string, year: number, month: string, produkt: Map<string, number>, mersalg: Map<string, number>)  {
 

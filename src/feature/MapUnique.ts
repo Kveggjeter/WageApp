@@ -6,7 +6,6 @@ class MapUnique extends NamesForProduct {
         const ny: string = "ny";
         const mer: string = "mer";
         let v: string;
-
         if (org) v = ny;
         else v = mer;
 

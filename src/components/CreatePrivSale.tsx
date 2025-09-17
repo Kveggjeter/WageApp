@@ -12,9 +12,9 @@ import PrivatSak from "../feature/privatSak.ts";
 import { PrivSaleWindowProp } from "../assets/type/PrivSaleWindowProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import PrivateCreateTableComp from "./PrivateCreateTableComp.tsx";
-import {RowData} from "../assets/type/TableProp.ts";
+import {PrivCreateSaleRowData} from "../assets/type/PrivCreateTableProp.ts";
 import {AddCommision} from "../firebase/firestore.ts";
-import {UniqueAdd} from "../feature/UniqueAdd.tsx";
+import {UniquePrivAdd} from "../feature/UniquePrivAdd.tsx";
 import MapUnique from "../feature/MapUnique.ts";
 import {UseDay, UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {useAuth} from "../contexts/authContext";
@@ -27,7 +27,7 @@ export function CreatePrivSale({ showPrivSaleWindow, closePrivSale, children }: 
     const [showProd, setShowProd] = useState(false);
     const [customerName, setCustomerName] = useState("");
     const { inputs } = useProdex();
-    const [rows, setRows] = useState<RowData[]>([]);
+    const [rows, setRows] = useState<PrivCreateSaleRowData[]>([]);
     const { year } = UseYear();
     const { month } = UseMonth();
     const { day } = UseDay();
@@ -67,7 +67,8 @@ export function CreatePrivSale({ showPrivSaleWindow, closePrivSale, children }: 
             
         });
 
-        const res = UniqueAdd(combined);
+        console.log(combined);
+        const res = UniquePrivAdd(combined);
         let produkt: Map<string, number> = res.produkt;
         let mersalg: Map<string, number> = res.mersalg;
         produkt = uni.navn(produkt, true);

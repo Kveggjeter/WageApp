@@ -1,10 +1,10 @@
-export interface TableProp {
+export interface PrivCreateTableProp {
     data: { [key: string]: number | string }; // Fra context (inputs)
-    rows: RowData[];
-    setRows: React.Dispatch<React.SetStateAction<RowData[]>>;
+    rows: PrivCreateSaleRowData[];
+    setRows: React.Dispatch<React.SetStateAction<PrivCreateSaleRowData[]>>;
 }
 
-export type RowData = {
+export type PrivCreateSaleRowData = {
     id: string;
     product: string;
     mersalg: boolean;

@@ -1,6 +1,6 @@
 import {GetThoseProps} from "../assets/type/GetThoseProps.ts";
 
-const MainTable = ({getValue, getCount}: GetThoseProps) => {
+const MainPrivTable = ({getValue, getCount}: GetThoseProps) => {
     const tableTd = "bg-gray-200 text-center pl-2 pr-2 pt-1"
     const valueCell = "text-center font-['Albert_Sans'] font-light border-b-1 border-r-1 border-dashed"
     const lastCell = "text-center font-['Albert_Sans'] font-light border-b-1 border-dashed"
@@ -17,7 +17,6 @@ const MainTable = ({getValue, getCount}: GetThoseProps) => {
     const ekstra_prov = +getValue("ekstra_ny") + +getValue("ekstra_mer");
     const liv_prov = +getValue("livSum_mer") + +getValue("livSum_ny");
     const sector_prov = +getValue("sector");
-    console.log("udf hus: " + hpv_udf_prov + " : udf bil:  " + hp1_udf_prov)
 
     return (
         <table className="shadow-md">
@@ -107,4 +106,4 @@ const MainTable = ({getValue, getCount}: GetThoseProps) => {
 }
 
 
-export default MainTable;
+export default MainPrivTable;

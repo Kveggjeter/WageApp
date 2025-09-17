@@ -1,11 +1,11 @@
-import {RowData, TableProp} from "../assets/type/TableProp.ts";
+import {PrivCreateSaleRowData, PrivCreateTableProp} from "../assets/type/PrivCreateTableProp.ts";
 import {useEffect} from "react";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 
-const PrivateCreateTableComp = ({ data, rows, setRows}: TableProp) => {
+const PrivateCreateTableComp = ({ data, rows, setRows}: PrivCreateTableProp) => {
 
  const entries = Object.entries(data);
-        const newRows: RowData[] = entries.flatMap(([key, val]) => {
+        const newRows: PrivCreateSaleRowData[] = entries.flatMap(([key, val]) => {
             const count = typeof val === "number" ? val : 1;
             return Array.from({ length: count }, (_, i) => ({
                 id: `${key}-${i}`,
@@ -24,7 +24,7 @@ const PrivateCreateTableComp = ({ data, rows, setRows}: TableProp) => {
     const { setInputs } = useProdex();
 
 
-    function handleCheckboxChange(rowId: string, field: keyof RowData) {
+    function handleCheckboxChange(rowId: string, field: keyof PrivCreateSaleRowData) {
         setRows((prev) =>
             prev.map((row) =>
                 row.id === rowId ? { ...row, [field]: !row[field] } : row

@@ -1,4 +1,4 @@
-import MainTable from "./MainTable.tsx";
+import MainPrivTable from "./MainPrivTable.tsx";
 import {PrivateObject} from "../assets/type/PrivateObject.ts";
 import {UseShowPrivCreateRemove, UseShowPrivCreateSale} from "../contexts/windowContext/privSaleContext.tsx";
 import {UseShowPrivateSale} from "../contexts/windowContext/typeOfDash.tsx";
@@ -18,7 +18,7 @@ export function PrivateDash(o: PrivateObject) {
         <div className="flex flex-row">
         <div className="flex flex-col self-start">
             <h2 className="text-2xl w-full pt-4 pb-1 border-b-2 border-grey-200 mb-2">{o.year} {o.month}</h2>
-            <MainTable getValue={o.getValue} getCount={o.getCount} />
+            <MainPrivTable getValue={o.getValue} getCount={o.getCount} />
         </div>
     <div className="flex flex-col ml-auto text-center ">
         <div className="flex flex-col self-center gap-6 mt-7 p-2 font-['Albert_Sans'] text-xl font-light md:max-xl:flex-col md:max-xl:max-w-30 md:max-xl:self-center">

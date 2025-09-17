@@ -1,6 +1,6 @@
-import {RowData} from "../assets/type/TableProp.ts";
+import {PrivCreateSaleRowData} from "../assets/type/PrivCreateTableProp.ts";
 
-export function UniqueAdd(combined: RowData[]) {
+export function UniquePrivAdd(combined: PrivCreateSaleRowData[]) {
     const produkt: Map<string, number> = new Map();
     const mersalg: Map<string, number> = new Map();
     let ekstra: number = 0;
@@ -8,7 +8,7 @@ export function UniqueAdd(combined: RowData[]) {
     let livSumProdukt: number = 0;
     let livSumMersalg: number = 0;
 
-    combined.forEach((item: RowData) => {
+    combined.forEach((item: PrivCreateSaleRowData) => {
         const isLiv = item.product.includes("Liv");
         const id: string = isLiv ? "Liv" : item.product;
         const eks: boolean = item.ekstra;

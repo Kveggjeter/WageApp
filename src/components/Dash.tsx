@@ -22,6 +22,8 @@ import {UseShowAllSale, UseShowCoorpSale, UseShowPrivateSale} from "../contexts/
 import CoorpDash from "./CoorpDash.tsx";
 import AllDash from "./AllDash.tsx";
 import CreateCoorpSale from "./CreateCoorpSale.tsx";
+import {CoorpObject} from "../assets/type/CoorpObject.ts";
+import {MakeCoorpWage} from "../feature/MakeCoorpWage.ts";
 
 export function Dash() {
     const {setInputs} = useProdex();
@@ -40,11 +42,15 @@ export function Dash() {
     const [ tableToShow, setTableToShow ] = useState<number>(0);
     const [customer, setCustomer] = useState<{ [key: string]: object } | never [] | undefined>({});
     const [isLoading, setIsLoading] = useState(false);
-    const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
+    const [ privateTabell, setPrivateTabell ] = useState<{ [key: string]: number }>({});
+    const [ coorpTabell, setcoorpTabell ] = useState<{ [key: string]: number }>({});
     const monthBtn = "bg-white text-center w-full h-7 font-['Albert_Sans'] text-2xl font-light shadow hover:bg-gray-100";
-    const [wages, setWages] = useState<Map<string, number>>(new Map());
+    const [privateWages, setPrivateWages] = useState<Map<string, number>>(new Map());
+    const [coorpWages, setCoorpWages] = useState<Map<string, number>>(new Map());
     let res: Map<string, number> = new Map<string, number>();
-    res = new Map(Object.entries(tabell));
+    let coorpRes: Map<string, number> = new Map<string, number>();
+    res = new Map(Object.entries(privateTabell));
+    coorpRes = new Map(Object.entries(coorpTabell));
 
 
     useEffect(() => {
@@ -76,14 +82,21 @@ export function Dash() {
             try {
                 setCustomer({});
                 setIsLoading(true);
-                const data = await GetWages(uid, year, month);
+                const privData = await GetWages(uid, year, month);
                 const customers:{[key:string]:object} | never[] | undefined = await GetCustomers(uid, year, month);
                 if (customers) setCustomer(customers);
-                if (data) setTabell(data);
-                else setTabell({});
+                if (privData) {
+                    setPrivateTabell(privData);
+                    setcoorpTabell(privData);
+                }
+                else {
+                    setPrivateTabell({});
+                    setcoorpTabell({});
+                }
             } catch (error) {
                 console.error("Feil ved lasting av tabell:", error);
-                setTabell({});
+                setPrivateTabell({});
+                setcoorpTabell({});
                 setCustomer({});
             } finally {
                 setIsLoading(false);
@@ -96,20 +109,22 @@ export function Dash() {
         const calculateWages = async () => {
             try {
                 if (!uid) return;
-                const result = await MakeWage({ tabell, uid });
-                setWages(result);
-                console.log("Calculated wages:", result);
+                const result = await MakeWage({ tabell: privateTabell, uid });
+                const coorpResult = await MakeCoorpWage({ tabell: coorpTabell, uid });
+                setPrivateWages(result);
+                setCoorpWages(coorpResult);
             } catch (e) {
-                console.error("Error calculating wages:", e);
+                console.error("Error calculating privateWages:", e);
             }
         };
         calculateWages();
-    }, [tabell, refresh]);
+    }, [privateTabell, refresh]);
 
-    const getValue = (key: string) => wages.get(key) || ""
+    const getCoorpValue = (key: string) => coorpWages.get(key) || "";
+    const getCoorpCount = (key: string) => coorpRes.get(key) || "";
+
+    const getValue = (key: string) => privateWages.get(key) || ""
     const getCount = (key: string) => res.get(key) || ""
-    const sjekk = wages.get("livSum_mer");
-    console.log("se her " + sjekk);
     const husTotal =
         +getCount("hpv_mer") + +getCount("hpv_ny") +
         +getCount("hpv_udf_mer") + +getCount("hpv_udf_ny");
@@ -130,7 +145,7 @@ export function Dash() {
     const livProv: number = +getValue("livSum_ny") + +getValue("livSum_mer");
     const totalLiv: number = (4 * +getValue("livSum_ny")) + ((+getValue("livSum_mer")/18) * 100)
     let skadeProv = 0;
-    wages.forEach((value) => {
+    privateWages.forEach((value) => {
         skadeProv += value;
     });
 
@@ -150,6 +165,8 @@ export function Dash() {
             hppTotal, hpTotal,
             skadeProv, livProv, totalProv,
         year, month});
+
+    const coorpSalg = new CoorpObject ({getCoorpValue, getCoorpCount, year, month});
 
     function click (value: number) {
         setYear(value);
@@ -209,7 +226,7 @@ export function Dash() {
                                     onClick={() => clickOnTable(2)}>Total</button>
                         </div>
                         <PrivateDash {...privatSalg}></PrivateDash>
-                        <CoorpDash {...privatSalg}></CoorpDash>
+                        <CoorpDash {...coorpSalg} />
                         <AllDash {...privatSalg}></AllDash>
                     </div>
                     <div className="flex flex-col items-center">
