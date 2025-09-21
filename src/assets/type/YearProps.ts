@@ -1,6 +1,6 @@
 import React from "react";
 
 export interface YearProps {
-    year?: number | undefined;
-    setYear: React.Dispatch<React.SetStateAction<number | undefined>>;
+    year?: number;
+    setYear: React.Dispatch<React.SetStateAction<number>>;
 }

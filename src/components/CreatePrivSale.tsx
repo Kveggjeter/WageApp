@@ -8,45 +8,52 @@ import nordea from "../assets/images/nordealogo_24.gif";
 import reise from "../assets/images/reise_24.gif";
 import Produkter from "./Produkter.tsx";
 import React, {useState} from "react";
-import Sak from "../feature/sak.ts";
-import { SalgProp } from "../assets/type/SalgProp.ts";
+import PrivatSak from "../feature/privatSak.ts";
+import { PrivSaleWindowProp } from "../assets/type/PrivSaleWindowProp.ts";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
-import TableComp from "./TableComp.tsx";
-import {RowData} from "../assets/type/TableProp.ts";
+import PrivateCreateTableComp from "./PrivateCreateTableComp.tsx";
+import {PrivCreateSaleRowData} from "../assets/type/PrivCreateTableProp.ts";
 import {AddCommision} from "../firebase/firestore.ts";
-import {UniqueAdd} from "../feature/UniqueAdd.tsx";
+import {UniquePrivAdd} from "../feature/UniquePrivAdd.tsx";
 import MapUnique from "../feature/MapUnique.ts";
-import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
+import {UseDay, UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {useAuth} from "../contexts/authContext";
+import {KalenderNorsk} from "../contexts/calendar/NorskKalender.ts";
 
 
-export function Salg({ showSalg, closeSalg, children }: SalgProp) {
+export function CreatePrivSale({ showPrivSaleWindow, closePrivSale, children }: PrivSaleWindowProp) {
 
     const [sal, setSal] = useState<string[] | null>(null);
     const [showProd, setShowProd] = useState(false);
+    const [customerName, setCustomerName] = useState("");
     const { inputs } = useProdex();
-    const [rows, setRows] = useState<RowData[]>([]);
+    const [rows, setRows] = useState<PrivCreateSaleRowData[]>([]);
     const { year } = UseYear();
     const { month } = UseMonth();
+    const { day } = UseDay();
     const { uid } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
     const imgBulkImg = "w-6 h-6";
     const listLi = "font-['Albert_Sans'] font-light items-center gap-2"
     const phover = "hover:cursor-pointer hover:text-green-500"
 
-    if (!showSalg) {return null}
+    if (!showPrivSaleWindow) {return null}
 
     function click(value: string) {
-        const sak = new Sak();
-        const saker: string[] | null = sak.sak(value);
+        const sak = new PrivatSak();
+        const saker: string[] | null = sak.privSak(value);
         setSal(null);
         setSal(saker);
         setShowProd(true);
     }
-
-
+    // legge til kundeogsånt her seinereeee
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
+        console.log("HER ER KUNDEN: " + customerName)
+        if(customerName === "") {
+            window.alert("Du må legge ved navn på kunde før du kan registrere salget ditt.");
+            return;
+        }
         setIsLoading(true);
         const uni = new MapUnique();
         const combined = rows.map((r) => {
@@ -55,19 +62,28 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                     ...r,
                     product: r.isLiv? "Liv": r.product
                 };
-            }
+            }      
             return r;
+            
         });
 
-        const res = UniqueAdd(combined);
+        console.log(combined);
+        const res = UniquePrivAdd(combined);
         let produkt: Map<string, number> = res.produkt;
         let mersalg: Map<string, number> = res.mersalg;
-        produkt = uni.navn(produkt, true)
-        mersalg = uni.navn(mersalg, false)
-
-        if(uid && year && month) await AddCommision(uid, year, month, produkt, mersalg);
+        produkt = uni.navn(produkt, true);
+        mersalg = uni.navn(mersalg, false);
+        const ekteMonth: number = KalenderNorsk(month);
+        let ekteDay;
+        if (typeof day != "undefined") {
+            if (day < 10) ekteDay = "0" + day;
+        } else ekteDay = day;
+        let realMonth: string = ekteMonth.toString();
+        if (ekteMonth < 10) realMonth = "0" + realMonth;
+        const customerNameWithDate = ekteDay + "." + realMonth + "-" + customerName.charAt(0).toUpperCase() + customerName.slice(1);
+        if(uid && year && month) await AddCommision(customerNameWithDate, uid, year, month, produkt, mersalg);
         setIsLoading(false);
-        closeSalg();
+        closePrivSale();
 
     }
 
@@ -109,14 +125,18 @@ export function Salg({ showSalg, closeSalg, children }: SalgProp) {
                     </li>
                 </ul>
                 <div className="font-['Albert_Sans'] relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden mt-5 ml-5 mb-20 mr-3">
-                    <TableComp data={inputs} rows={rows} setRows={setRows} />
+                    <PrivateCreateTableComp data={inputs} rows={rows} setRows={setRows} />
+                </div>
+                <div className="absolute right-0 bottom-0 mr-[20%] mb-3">
+                <label className="font-['Albert_Sans'] mr-5">Kundes navn</label>
+                <input type="text" placeholder="f.eks fornavn" onChange={(e) => setCustomerName(e.target.value)} className="border-1 border-black h-8 rounded-md"></input>
                 </div>
                 <button type="submit" className="font-['Albert_Sans'] absolute right-0 bottom-0 mr-2 mb-2 rounded-md w-30 h-10 text-xl font-light text-white bg-green-700 ease-in-out duration-500 hover:duration-500 hover:bg-green-500 hover:cursor-pointer">Registrer</button>
                 {children}
-                <button className="absolute w-5 h-5 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={closeSalg}>X</button>
+                <button className="absolute w-5 h-5 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={closePrivSale}>X</button>
             </form>
         </>
     )
 }
 
-export default Salg;
+export default CreatePrivSale;

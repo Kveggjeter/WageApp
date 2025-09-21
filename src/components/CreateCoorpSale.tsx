@@ -1,0 +1,139 @@
+import person from "../assets/images/barnogvoksne_24.gif";
+import hus from "../assets/images/husoghjem_24.gif";
+import bil from "../assets/images/kjoeretoey_24.gif";
+import annet from "../assets/images/nliprivat_24.gif";
+import nordea from "../assets/images/nordealogo_24.gif";
+import Produkter from "./Produkter.tsx";
+import React, {useState} from "react";
+import {useProdex} from "../contexts/productContext/Prodex.tsx";
+import {AddCommision} from "../firebase/firestore.ts";
+import {UseDay, UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
+import {useAuth} from "../contexts/authContext";
+import {KalenderNorsk} from "../contexts/calendar/NorskKalender.ts";
+import {CoorpSaleWindowProp} from "../assets/type/CoorpSaleWindowProp.ts";
+import CoorpCreateTableComp from "./CoorpCreateTableComp.tsx";
+import CoorpSak from "../feature/coorpSak.ts";
+import {CoorpCreateSaleRowData} from "../assets/type/CoorpCreateTableProp.ts";
+import {UniqueCoorpAdd} from "../feature/UniqueCoorpAdd.tsx";
+import {CoorpCreateExtraRowData} from "../assets/type/CoorpCreateExtraRowData.ts";
+import GiveProductCorrectCode from "../feature/GiveProductCorrectCode.ts";
+
+
+export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children }: CoorpSaleWindowProp) {
+
+    const [extraRows, setExtraRows] = useState<CoorpCreateExtraRowData[]>([]);
+    const [sal, setSal] = useState<string[] | null>(null);
+    const [showProd, setShowProd] = useState(false);
+    const [customerName, setCustomerName] = useState("");
+    const { inputs } = useProdex();
+    const [rows, setRows] = useState<CoorpCreateSaleRowData[]>([]);
+    const { year } = UseYear();
+    const { month } = UseMonth();
+    const { day } = UseDay();
+    const { uid } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
+    const imgBulkImg = "w-6 h-6";
+    const listLi = "font-['Albert_Sans'] font-light items-center gap-2"
+    const phover = "hover:cursor-pointer hover:text-green-500"
+
+    if (!showCoorpSaleWindow) {return null}
+
+    function resetForm() {
+        setRows([]);
+        setExtraRows([]);
+        setCustomerName("");
+        setSal(null);
+        setShowProd(false);
+    }
+
+    function click(value: string) {
+        const sak = new CoorpSak();
+        const saker: string[] | null = sak.coorpSak(value);
+        setSal(null);
+        setSal(saker);
+        setShowProd(true);
+    }
+
+    const handleRegister = async (event: React.FormEvent) => {
+        event.preventDefault();
+        console.log("HER ER KUNDEN: " + customerName)
+        if(customerName === "") {
+            window.alert("Du må legge ved navn på kunde før du kan registrere salget ditt.");
+            return;
+        }
+        setIsLoading(true);
+
+        const combined = [
+            ...rows,
+            ...extraRows.filter(row => row.ekstra)
+        ];
+        const res = UniqueCoorpAdd(combined);
+        const converter = new GiveProductCorrectCode();
+        const codeMap = converter.nameAsCodes(combined);
+        codeMap.set("amount", res.get("sum") as number)
+        const ekteMonth: number = KalenderNorsk(month);
+
+        let ekteDay;
+        if (day < 10) ekteDay = "0" + day;
+        else ekteDay = day;
+        let realMonth: string = ekteMonth.toString();
+
+        if (ekteMonth < 10) realMonth = "0" + realMonth;
+        const customerNameWithDate = ekteDay + "." + realMonth + "-" + customerName.charAt(0).toUpperCase() + customerName.slice(1);
+
+        if(uid && year && month) await AddCommision(customerNameWithDate, uid, year, month, codeMap, new Map());
+        setIsLoading(false);
+        closeCoorpSale();
+        resetForm();
+    }
+
+    return (
+        <>
+            {isLoading && (
+                <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-black/50">
+                    <div className="w-16 h-16 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
+                </div>
+            )}
+            <Produkter sal={sal} showProd={showProd} closeProd={() => setShowProd(false)} children={undefined}/>
+            <form className="flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-[600px] w-[800px] bg-white border border-black z-10"
+                  onSubmit={handleRegister}>
+                <ul className="pt-5 pl-4 flex flex-col gap-4">
+                    <li className={listLi}>
+                        <img className={imgBulkImg} src={person} alt="ansatte"/>
+                        <p className={phover} onClick={() => click("ansatte")}>Ansatte</p>
+                    </li><li className={listLi}>
+                    <img className={imgBulkImg} src={person} alt="ansvar"/>
+                    <p className={phover} onClick={() => click("ansvar")}>Ansvar</p>
+                </li><li className={listLi}>
+                    <img className={imgBulkImg} src={hus} alt="hus"/>
+                    <p className={phover} onClick={() => click("bygg")}>Bygg og eiendeler</p>
+                </li><li className={listLi}>
+                    <img className={imgBulkImg} src={bil} alt="bil"/>
+                    <p className={phover} onClick={() => click("bilBedrift")}>Kjøretøy</p>
+                </li><li className={listLi}>
+                    <img className={imgBulkImg} src={annet} alt="transport"/>
+                    <p className={phover} onClick={() => click("transport")}>Transport av varer</p>
+                </li><li className={listLi}>
+                    <img className={imgBulkImg} src={annet} alt="annet"/>
+                    <p className={phover} onClick={() => click("annetBedrift")}>Annet</p>
+                </li><li className={listLi}>
+                    <img className={imgBulkImg} src={nordea} alt="nordea"/>
+                    <p className={phover} onClick={() => click("itp")}>Nordea Liv</p>
+                </li>
+                </ul>
+                <div className="font-['Albert_Sans'] relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden mt-5 ml-5 mb-20 mr-3">
+                    <CoorpCreateTableComp data={inputs} rows={rows} setRows={setRows} extraRows={extraRows} setExtraRows={setExtraRows} />
+                </div>
+                <div className="absolute right-0 bottom-0 mr-[20%] mb-3">
+                    <label className="font-['Albert_Sans'] mr-5">Kundes navn</label>
+                    <input type="text" placeholder="f.eks fornavn" onChange={(e) => setCustomerName(e.target.value)} className="border-1 border-black h-8 rounded-md"></input>
+                </div>
+                <button type="submit" className="font-['Albert_Sans'] absolute right-0 bottom-0 mr-2 mb-2 rounded-md w-30 h-10 text-xl font-light text-white bg-green-700 ease-in-out duration-500 hover:duration-500 hover:bg-green-500 hover:cursor-pointer">Registrer</button>
+                {children}
+                <button className="absolute w-5 h-5 text-[18px] right-0 top-0 text-center leading-none items-center justify-center duration-700 bg-red-800 ease-in-out hover:scale-105 hover:duration-500 hover:ease-in-out hover:text-white" onClick={() => {closeCoorpSale(); resetForm()}}>X</button>
+            </form>
+        </>
+    )
+}
+
+export default CreateCoorpSale;

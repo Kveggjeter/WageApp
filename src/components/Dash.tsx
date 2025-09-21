@@ -1,45 +1,109 @@
 import {useEffect, useState} from "react";
 import {doSignOut} from "../firebase/auth.ts";
 import {useNavigate} from "react-router-dom";
-import { Salg } from "../components/Salg.tsx";
+import { CreatePrivSale } from "./CreatePrivSale.tsx";
 import {useProdex} from "../contexts/productContext/Prodex.tsx";
 import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
 import {NorskKalender} from "../contexts/calendar/NorskKalender.ts";
 import {useAuth} from "../contexts/authContext";
-import {GetWages} from "../firebase/firestore.ts";
-import MainTable from "./MainTable.tsx";
+import {GetCustomers, GetWages} from "../firebase/firestore.ts";
 import {MakeWage} from "../feature/MakeWage.ts";
 import livboye from "../assets/images/livboye.jpg";
 import {RemoveSalg} from "./RemoveSalg.tsx";
+import {
+    UseShowCoorpCreateRemove,
+    UseShowCoorpCreateSale,
+    UseShowPrivCreateRemove,
+    UseShowPrivCreateSale
+} from "../contexts/windowContext/privSaleContext.tsx";
+import PrivateDash from "./PrivateDash.tsx";
+import {UseShowAllSale, UseShowCoorpSale, UseShowPrivateSale} from "../contexts/windowContext/typeOfDash.tsx";
+import CoorpDash from "./CoorpDash.tsx";
+import AllDash from "./AllDash.tsx";
+import CreateCoorpSale from "./CreateCoorpSale.tsx";
+import {CoorpObject} from "../assets/type/CoorpObject.ts";
+import {MakeCoorpWage} from "../feature/MakeCoorpWage.ts";
+import {PopulateCoorpTable, PopulatePrivTable} from "../feature/TableUtils.ts";
+import {PrivateObject} from "../assets/type/PrivateObject.ts";
 
 export function Dash() {
     const {setInputs} = useProdex();
     const [ refresh, setRefresh ] = useState(0);
     const navigate = useNavigate();
-    const [ showSalg, setShowSalg ] = useState(false);
-    const [ showRemove, setShowRemove ] = useState(false);
+    const { showPrivCreateSale, setShowPrivCreateSale } = UseShowPrivCreateSale();
+    const { showPrivCreateRemove, setShowPrivCreateRemove } = UseShowPrivCreateRemove();
+    const { showCoorpCreateSale, setShowCoorpCreateSale } = UseShowCoorpCreateSale();
+    const { showCoorpCreateRemove, setShowCoorpCreateRemove } = UseShowCoorpCreateRemove();
+    const [showMonths, setShowMonths] = useState(false);
+    const {showPrivateSale, setShowPrivateSale} = UseShowPrivateSale();
+    const {showCoorpSale, setShowCoorpSale} = UseShowCoorpSale();
+    const {showAllSale, setShowAllSale} = UseShowAllSale();
     const { year, setYear } = UseYear();
     const { month, setMonth } = UseMonth();
     const { uid } = useAuth();
+    const [ tableToShow, setTableToShow ] = useState<number>(0);
+    const [customer, setCustomer] = useState<{ [key: string]: object } | never [] | undefined>({});
     const [isLoading, setIsLoading] = useState(false);
-    const [ tabell, setTabell ] = useState<{ [key: string]: number }>({});
-    const monthBtn = "bg-white text-center w-full h-7 font-['Albert_Sans'] text-2xl font-light shadow hover:bg-gray-100";
-    const [wages, setWages] = useState<Map<string, number>>(new Map());
+    const [ privateTabell, setPrivateTabell ] = useState<{ [key: string]: number }>({});
+    const [ coorpTabell, setcoorpTabell ] = useState<{ [key: string]: number }>({});
+    const monthBtn = "bg-white text-center w-full h-7 font-['Albert_Sans'] text-2xl font-light shadow hover:bg-gray-100 " +
+        "max-md:hidden";
+    const yearMonthBtn = `border-none bg-white px-3 h-[35px] font-['Albert_Sans']
+        text-[20px] font-light shadow-md hover:bg-gray-200 transition
+        max-md:min-w-10 max-md:w-20 max-md:text-[16px] max-md:bg-white`;
+    const [privateWages, setPrivateWages] = useState<Map<string, number>>(new Map());
+    const [coorpWages, setCoorpWages] = useState<Map<string, number>>(new Map());
     let res: Map<string, number> = new Map<string, number>();
-    res = new Map(Object.entries(tabell));
+    let coorpRes: Map<string, number> = new Map<string, number>();
+    res = new Map(Object.entries(privateTabell));
+    coorpRes = new Map(Object.entries(coorpTabell));
 
+
+    useEffect(() => {
+       const whatToShow = () => {
+
+           if(tableToShow === 0) {
+               setShowPrivateSale(true);
+               setShowCoorpSale(false);
+               setShowAllSale(false);
+           }
+           else if(tableToShow === 1) {
+               setShowPrivateSale(false);
+               setShowCoorpSale(true);
+               setShowAllSale(false);
+           }
+           else if(tableToShow === 2) {
+               setShowPrivateSale(false);
+               setShowCoorpSale(false);
+               setShowAllSale(true);
+           }
+       };
+       whatToShow();
+    }, [tableToShow, setShowCoorpSale, setShowAllSale, setShowPrivateSale]);
+    
     useEffect(() => {
         const loadTabellData = async () => {
             if (!uid || !year || !month) return;
 
             try {
+                setCustomer({});
                 setIsLoading(true);
-                const data = await GetWages(uid, year, month);
-                if (data) setTabell(data);
-                else setTabell({});
+                const privData = await GetWages(uid, year, month);
+                const customers:{[key:string]:object} | never[] | undefined = await GetCustomers(uid, year, month);
+                if (customers) setCustomer(customers);
+                if (privData) {
+                    setPrivateTabell(privData);
+                    setcoorpTabell(privData);
+                }
+                else {
+                    setPrivateTabell({});
+                    setcoorpTabell({});
+                }
             } catch (error) {
                 console.error("Feil ved lasting av tabell:", error);
-                setTabell({});
+                setPrivateTabell({});
+                setcoorpTabell({});
+                setCustomer({});
             } finally {
                 setIsLoading(false);
             }
@@ -51,52 +115,20 @@ export function Dash() {
         const calculateWages = async () => {
             try {
                 if (!uid) return;
-                const result = await MakeWage({ tabell, uid });
-                setWages(result);
-                console.log("Calculated wages:", result);
+                const result = await MakeWage({ tabell: privateTabell, uid });
+                const coorpResult = await MakeCoorpWage({ tabell: coorpTabell, uid });
+                setPrivateWages(result);
+                setCoorpWages(coorpResult);
             } catch (e) {
-                console.error("Error calculating wages:", e);
+                console.error("Error calculating privateWages:", e);
             }
         };
         calculateWages();
-    }, [tabell, refresh]);
-
-    const getValue = (key: string) => wages.get(key) || ""
-    const getCount = (key: string) => res.get(key) || ""
-    const sjekk = wages.get("livSum_mer");
-    console.log("se her " + sjekk);
-    const husTotal =
-        +getCount("hpv_mer") + +getCount("hpv_ny") +
-        +getCount("hpv_udf_mer") + +getCount("hpv_udf_ny");
-    const bilTotal =
-        +getCount("hp1_ny") + +getCount("hp1_mer") +
-        +getCount("hp2_ny") + +getCount("hp1_udf_ny");
-    const hppTotal = +getCount("hpp_ny") + +getCount("hpp_mer");
-
-    const hpTotal = husTotal + bilTotal + hppTotal;
-    let hpBonus = hpTotal - 17;
-    let hpBonusSum = 0;
-    if (hpBonus <= 0) {
-            hpBonus = 0;
-        } else hpBonusSum = hpBonus * 450;
-    let femmern: number = 0;
-    if (hpBonus >= 23) femmern = 5000;
-
-    const livProv: number = +getValue("livSum_ny") + +getValue("livSum_mer");
-    const totalLiv: number = (4 * +getValue("livSum_ny")) + ((+getValue("livSum_mer")/18) * 100)
-    let skadeProv = 0;
-    wages.forEach((value) => {
-        skadeProv += value;
-    });
-
-    skadeProv -= livProv;
+    }, [privateTabell, refresh]);
 
 
-    const numClean = (n: number) => {
-        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
-
-    const totalProv: number = skadeProv + hpBonusSum + femmern + livProv;
+    const privatSalg: PrivateObject = PopulatePrivTable(privateWages, res);
+    const coorpSalg: CoorpObject = PopulateCoorpTable(coorpWages, coorpRes);
 
     function click (value: number) {
         setYear(value);
@@ -105,103 +137,119 @@ export function Dash() {
     function mclick (value: number) {
         setMonth(NorskKalender(value));
     }
-    
+
+    function clickOnTable (value: number) {
+        setTableToShow(value);
+    }
+
     return (
         <>
             {isLoading && (
                 <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-black/50">
-                    <div className="w-16 h-16 border-4 border-white border-t-blue-500 rounded-full animate-spin"></div>
+                    <div className="w-16 h-16 border-4 border-white border-t-blue-500 rounded-full animate-spin" />
                 </div>
             )}
-        <Salg showSalg={showSalg} closeSalg={() => { setShowSalg(false); setInputs({}); setRefresh(prev => prev +1); } } children={undefined}/>
-            <RemoveSalg showRemove={showRemove} closeRemove={() => { setShowRemove(false); setInputs({}); setRefresh(prev => prev +1); }} children={undefined}/>
-            <div className="flex justify-between items-center pl-10 pr-10 gap-13 max-w-screen min-w-screen max-h-screen min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
-                <div className="relative flex flex-col mb-13 mt-13 pr-2 pl-2 item-center w-42 max-h-screen rounded bg-white/50 backdrop-blur-sm shadow font-['Albert_Sans']">
-                    <div className="relative w-full inline-block group pt-5">
-                        <button className="border-none bg-white w-[90%] h-[35px] mx-[5%] font-['Albert_Sans'] text-[20px] font-light shadow-md hover:bg-gray-200 transition">{year} {'\u{2BC6}'}</button>
-                        <div className="absolute hidden bg-[#f1f1f1] max-h-[80px] overflow-y-auto min-w-[170px] max-w-[170px] shadow-lg z-10 group-hover:block text-center">
-                            <p className="hover:bg-white" onClick={() => click(2025)}>2025</p>
-                            <p className="hover:bg-white" onClick={() => click(2026)}>2026</p>
-                            <p className="hover:bg-white" onClick={() => click(2027)}>2027</p>
-                            <p className="hover:bg-white" onClick={() => click(2028)}>2028</p>
+            <CreatePrivSale showPrivSaleWindow={showPrivCreateSale} closePrivSale={() => {
+                setShowPrivCreateSale(false); setInputs({});
+                setRefresh(prev => prev +1); } } children={undefined}/>
+            <RemoveSalg showRemove={showPrivCreateRemove} closeRemove={() => {
+                setShowPrivCreateRemove(false); setInputs({});
+                setRefresh(prev => prev +1); }} children={undefined}/>
+            <CreateCoorpSale showCoorpSaleWindow={showCoorpCreateSale} closeCoorpSale={() => {
+                setShowCoorpCreateSale(false); setInputs({});
+                setRefresh(prev => prev +1); } } children={undefined}/>
+            <div className="flex justify-between pl-10 pr-10 gap-13 max-w-screen min-w-screen max-h-screen
+             min-h-screen font-['Albert_Sans'] bg-white/70 bg-blend-lighten bg-cover max-md:flex-col
+             max-md:p-0 max-md:m-0 max-md:gap-0"
+             style={{ backgroundImage: `url(${livboye})` }}>
+                <div className="relative overflow-auto [&::-webkit-scrollbar]:hidden
+                 [-ms-overflow-style:none] [scrollbar-width:none] flex-col mb-13 mt-13 pr-2 pl-2 item-center
+                  w-42 max-h-screen rounded bg-white/50 backdrop-blur-sm shadow font-['Albert_Sans']
+                  max-md:min-w-screen max-md:max-h-20 max-md:absolute max-md:z-40 max-md:top-0 max-md:p-0 max-md:m-0
+                  max-md:flex-row max-md:overflow-visible">
+                    <div className="flex flex-col justify-center items-center w-full gap-2 mt-5 mb-4
+                     max-md:gap-1 max-md:justify-center max-md:flex-wrap max-md:flex-row">
+                        <div className="relative group max-md:relative">
+                            <button className={`${yearMonthBtn} group-hover:bg-gray-200`}>
+                                {year} {'\u{2BC6}'}
+                            </button>
+                            <div className="absolute hidden left-1/2 transform -translate-x-1/2
+                             bg-[#f1f1f1] max-h-[80px] overflow-y-auto min-w-[150px]
+                              max-w-[150px] shadow-lg z-10 group-hover:block text-center
+                              max-md:min-w-10 max-md:w-20 max-md:text-[16px]">
+                                {[2025, 2026, 2027, 2028].map(y => (
+                                    <p key={y} className="hover:bg-white cursor-pointer"
+                                    onClick={() => click(y)}>{y}</p>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex flex-col mt-22 mb-10 gap-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] overflow-y-auto ">
-                        <button className={monthBtn} id="january" onClick={() => mclick(0)}>Januar</button>
-                        <button className={monthBtn} id="february" onClick={() => mclick(1)}>Februar</button>
-                        <button className={monthBtn} id="march" onClick={() => mclick(2)}>Mars</button>
-                        <button className={monthBtn} id="april" onClick={() => mclick(3)}>April</button>
-                        <button className={monthBtn} id="may" onClick={() => mclick(4)}>Mai</button>
-                        <button className={monthBtn} id="june" onClick={() => mclick(5)}>Juni</button>
-                        <button className={monthBtn} id="july" onClick={() => mclick(6)}>Juli</button>
-                        <button className={monthBtn} id="august" onClick={() => mclick(7)}>August</button>
-                        <button className={monthBtn} id="september" onClick={() => mclick(8)}>September</button>
-                        <button className={monthBtn} id="october" onClick={() => mclick(9)}>Oktober</button>
-                        <button className={monthBtn} id="november" onClick={() => mclick(10)}>November</button>
-                        <button className={monthBtn} id="desember" onClick={() => mclick(11)}>Desember</button>
+                        <div className="max-md:relative max-md:group">
+                            <button
+                                className={`${yearMonthBtn} ${showMonths ? 'group-hover:bg-gray-200' : ''}
+                                 hidden max-md:block max-md:w-24 `}
+                                onClick={() => setShowMonths(!showMonths)}>
+                            {month} {'\u{2BC6}'}
+                        </button>
+                            <div
+                                className={`flex flex-col mt-22 mb-10 gap-6 
+                                ${showMonths ? 'max-md:flex' : 'max-md:hidden'}
+                                max-md:m-0 max-md:gap-0 max-md:left-1/2 max-md:transform max-md:-translate-x-1/2
+                                max-md:bg-[#f1f1f1] max-md:max-h-[80px] max-md:overflow-y-auto max-md:shadow-lg
+                                max-md:x-10 max-md:text-center max-md:group-hover:block max-md:text-[16px]
+                                max-md:min-w-10 max-md:w-20 max-md:absolute`}> {
+                                    [
+                                        'Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni',
+                                        'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'
+                                    ].map((m, index) => (
+                                        <button key={index} className={`hover:bg-gray-200
+                                         cursor-pointer rounded w-auto pl-7 pr-7 bg-white
+                                         max-md:p-0`
+                                        } id={m.toLowerCase()} onClick={() => mclick(index)}>{m}</button>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                    <div className="flex gap-2 pl-4 pb-7 max-h-screen h-3/5 mt-13 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
-                        <div className="flex flex-col self-start">
-                            <h2 className="text-2xl w-full pt-4 pb-1 border-b-2 border-grey-200 mb-2">{year} {month}</h2>
-                                <MainTable getValue={getValue} getCount={getCount} />
+                    <div className="flex flex-col self-center pl-4 pb-7 w-full max-w-8/16 max-h-screen h-3/5 pt-6 mb-13 rounded bg-white shadow font-['Albert_Sans'] relative">
+                        <div className="absolute flex self center left-0 top-0 min-h-8 w-full bg-white">
+                            <button className={`w-1/10 border-1 border-black  hover:cursor-pointer ${showPrivateSale ? 'bg-red-500 hover:bg-red-300' : 'hover:bg-gray-100'}`}
+                                    onClick={() => clickOnTable(0)}>Privat</button>
+                            <button className={`w-1/10 border-1 border-black  hover:cursor-pointer ${showCoorpSale ? 'bg-red-500 hover:bg-red-300' : 'hover:bg-gray-100'}`}
+                                    onClick={() => clickOnTable(1)}>Bedrift</button>
+                            <button className={`w-1/10 border-1 border-black hover:cursor-pointer ${showAllSale ? 'bg-red-500 hover:bg-red-300' : 'hover:bg-gray-100'}`}
+                                    onClick={() => clickOnTable(2)}>Total</button>
                         </div>
-                        <div className="flex flex-col text-center ">
-                            <div className="flex flex-col self-center gap-6 mt-7 p-2 font-['Albert_Sans'] text-xl font-light md:max-xl:flex-col md:max-xl:max-w-30 md:max-xl:self-center">
-                                <div className="flex-1 md:max-xl:border-r-0 md:max-xl:pb-2 md:max-xl:mb-2 md:max-xl:max-w-30">
-                                    <h3 className="hpBonus">HP bonus</h3>
-                                    <h2 className="text-3xl">{hpBonus}/23</h2>
-                                </div>
-                                <div className="flex-1 md:max-xl:max-w-30">
-                                    <h3 id="sgNor">Salgsum Nordea</h3>
-                                    <h2 className="text-3xl">{numClean(totalLiv)} NOK</h2>
-                                </div>
-                            </div>
-                            <div className="flex gap-2 mt-auto ml-2 mr-4 font-['Albert_Sans'] rounded-lg">
-                                <button
-                                    className="max-w-full pl-2 pr-2 text-center leading-none h-8 text-center text-lg font-light text-white bg-green-600 ease-in-out duration-600 hover:cursor-pointer hover:bg-green-500 hover:ease-in-out hover:duration-500"
-                                    id="addSale"
-                                    onClick={()=>setShowSalg(true)}
-                                    >Salg</button>
-                                <button className="max-w-full pl-2 pr-2 h-8 leading-none text-white italic text-lg font-extralight bg-red-800 duration-500 ease-in-out hover:cursor-pointer hover:bg-red-700 hover:ease-in-out hover:duration-500"
-                                id="removeSale"
-                                        onClick={()=>setShowRemove(true)}
-                                >Fjern salg</button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col pr-5 items-end mt-5 text-center">
-                            <div className="flex flex-col justify-center items-center border-b-3 border-gray-200">
-                                <div className="font-['Albert_Sans'] font-light text-xl flex flex-row justify-center gap-2">
-                                    <h3 id="hpHus">{husTotal} Hus</h3>
-                                    <h3 id="hpBil">{bilTotal} Bil</h3>
-                                    <h3 id="hphpp">{hppTotal} HPP</h3>
-                                </div>
-                                <div className="text-4xl mt-2">
-                                    <h1 id="totalHp">{hpTotal}</h1>
-                                </div>
-                            </div>
-                            <div className="mb-7 border-b-3 border-gray-200">
-                                <h3 id="provSkade">Provisjon skade</h3>
-                                <h1 className="text-4xl" id="salgSkadeSum">{numClean(~~skadeProv)}NOK</h1>
-                            </div>
-                            <div className="mb-7 border-b-3 border-gray-200">
-                                <h3 id="provLiv">Provisjon Nordea</h3>
-                                <h1 className="text-4xl" id="salgLivSum">{numClean(~~livProv)}</h1>
-                            </div>
-                            <div className="mt-auto mb-2 border-b-5 border-black">
-                                <h3 id="totalProvSum">Total provisjon</h3>
-                                <h1 className="text-5xl font-semibold" id="totalProvSalgSum">{numClean(totalProv)}NOK</h1>
-                            </div>
-                        </div>
+                        <PrivateDash {...privatSalg}></PrivateDash>
+                        <CoorpDash {...coorpSalg} />
+                        <AllDash privObject={privatSalg} coorpObject={coorpSalg} />
                     </div>
-                    <div className="flex mb-auto">
-                <button className="shadow min-w-30 mt-5 leading-none pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
+                    <div className="flex flex-col items-center">
+                <button className="shadow min-w-30 max-w-30 mt-5 leading-none pl-2 pr-2 h-10 text-xl font-['Albert_Sans'] font-medium bg-white/50 backdrop-blur-sm duration-700 ease-in-out hover:rounded-md hover:cursor-pointer hover:bg-red-800 hover:text-white hover:duration-500 hover:scale-101"
                         onClick={() => {
                             doSignOut().then(() => {
                                 navigate('/')
                             })
                         }}>Logg ut</button>
+                        <div className="flex flex-col mt-auto mb-auto shadow bg-white rounded-r-sm h-70 w-50 p-2 pb-10">
+                            <p className="h-max w-full border-b border-black text-xl font-['Albert_Sans']">Kunder</p>
+                            <div className="flex items-center justify-center pt-2 h-full w-full">
+                                <ul className="flex flex-col h-full w-full font-light font-['Albert_Sans'] overflow-y-auto overflow-x-hidden">
+                                    {customer && Object.entries(customer).map(([key, value], index) => (
+                                        <li key={index} className="mb-4 group relative cursor-pointer">
+                                            <span>{key}</span>
+                                            <div className="absolute top-0 w-max p-2 rounded bg-gray-200 text-sm text-black opacity-0 group-hover:opacity-100 transition-opacity shadow-lg z-50 border border-red-500">
+                                            {Object.entries(value).map(([fieldKey, fieldValue]) => (
+                                                    <div key={fieldKey}>
+                                                        <strong>{fieldKey}:</strong> {String(fieldValue)}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
+            </div>
             </div>
         </>
     )
