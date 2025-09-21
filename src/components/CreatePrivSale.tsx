@@ -74,13 +74,15 @@ export function CreatePrivSale({ showPrivSaleWindow, closePrivSale, children }: 
         produkt = uni.navn(produkt, true);
         mersalg = uni.navn(mersalg, false);
         const ekteMonth: number = KalenderNorsk(month);
+
         let ekteDay;
-        if (typeof day != "undefined") {
-            if (day < 10) ekteDay = "0" + day;
-        } else ekteDay = day;
+        if (day < 10) ekteDay = "0" + day;
+        else ekteDay = day;
         let realMonth: string = ekteMonth.toString();
+
         if (ekteMonth < 10) realMonth = "0" + realMonth;
         const customerNameWithDate = ekteDay + "." + realMonth + "-" + customerName.charAt(0).toUpperCase() + customerName.slice(1);
+
         if(uid && year && month) await AddCommision(customerNameWithDate, uid, year, month, produkt, mersalg);
         setIsLoading(false);
         closePrivSale();

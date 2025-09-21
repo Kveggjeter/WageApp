@@ -21,7 +21,7 @@ class MapUnique extends NamesForProduct {
         if (this.hp2.includes(key)) kart.set("hp2_" + v, value);
         if (this.hpp.includes(key)) kart.set("hpp_" + v, value);
         if (this.ekstra.includes(key)) kart.set("ekstra_" + v, value);
-        if (this.sector.includes(key)) kart.set("sector_" + v, value);
+        if (this.sector.includes(key)) kart.set("sector", value);
         if (this.udf_hp1.includes(key)) kart.set("hp1_udf_" + v, value);
         if (this.udf_hp2.includes(key)) kart.set("hp2_udf_" + v, value);
         if (this.udf_hpv.includes(key)) kart.set("hpv_udf_" + v, value);

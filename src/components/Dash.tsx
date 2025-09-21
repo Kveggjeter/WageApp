@@ -10,9 +10,7 @@ import {GetCustomers, GetWages} from "../firebase/firestore.ts";
 import {MakeWage} from "../feature/MakeWage.ts";
 import livboye from "../assets/images/livboye.jpg";
 import {RemoveSalg} from "./RemoveSalg.tsx";
-import {
-    UseShowCoorpCreateRemove,
-    UseShowCoorpCreateSale,
+import {UseShowCoorpCreateSale,
     UseShowPrivCreateRemove,
     UseShowPrivCreateSale
 } from "../contexts/windowContext/privSaleContext.tsx";
@@ -33,7 +31,6 @@ export function Dash() {
     const { showPrivCreateSale, setShowPrivCreateSale } = UseShowPrivCreateSale();
     const { showPrivCreateRemove, setShowPrivCreateRemove } = UseShowPrivCreateRemove();
     const { showCoorpCreateSale, setShowCoorpCreateSale } = UseShowCoorpCreateSale();
-    const { showCoorpCreateRemove, setShowCoorpCreateRemove } = UseShowCoorpCreateRemove();
     const [showMonths, setShowMonths] = useState(false);
     const {showPrivateSale, setShowPrivateSale} = UseShowPrivateSale();
     const {showCoorpSale, setShowCoorpSale} = UseShowCoorpSale();
@@ -46,8 +43,6 @@ export function Dash() {
     const [isLoading, setIsLoading] = useState(false);
     const [ privateTabell, setPrivateTabell ] = useState<{ [key: string]: number }>({});
     const [ coorpTabell, setcoorpTabell ] = useState<{ [key: string]: number }>({});
-    const monthBtn = "bg-white text-center w-full h-7 font-['Albert_Sans'] text-2xl font-light shadow hover:bg-gray-100 " +
-        "max-md:hidden";
     const yearMonthBtn = `border-none bg-white px-3 h-[35px] font-['Albert_Sans']
         text-[20px] font-light shadow-md hover:bg-gray-200 transition
         max-md:min-w-10 max-md:w-20 max-md:text-[16px] max-md:bg-white`;

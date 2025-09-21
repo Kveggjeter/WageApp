@@ -1,6 +1,4 @@
-import {
-    UseShowCoorpCreateRemove,
-    UseShowCoorpCreateSale, UseShowPrivCreateRemove
+import {UseShowCoorpCreateSale, UseShowPrivCreateRemove
 } from "../contexts/windowContext/privSaleContext.tsx";
 import {UseShowCoorpSale} from "../contexts/windowContext/typeOfDash.tsx";
 import MainCoorpTable from "./MainCoorpTable.tsx";
@@ -11,7 +9,6 @@ import {NumClean} from "../feature/TableUtils.ts";
 
 export function CoorpDash(o: CoorpObject)  {
     const { setShowCoorpCreateSale } = UseShowCoorpCreateSale();
-    const { setShowCoorpCreateRemove } = UseShowCoorpCreateRemove();
     const { setShowPrivCreateRemove } = UseShowPrivCreateRemove();
     const { showCoorpSale } = UseShowCoorpSale();
     const { year  } = UseYear();

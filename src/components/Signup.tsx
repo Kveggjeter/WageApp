@@ -115,7 +115,7 @@ export function Signup() {
                                 />
                             </div>
                             <div className="flex flex-row justify-center gap-2">
-                                <label>Porsgrunn</label>
+                                <label>NB TM</label>
                                 <input
                                     type="radio"
                                     name="office"
@@ -123,7 +123,7 @@ export function Signup() {
                                     onChange={(e) => setOffice(e.target.value)}
                                     required
                                     />
-                                <label className="ml-6">Stathelle</label>
+                                <label className="ml-6">NB Franchise</label>
                                 <input
                                     name="office"
                                     type="radio"

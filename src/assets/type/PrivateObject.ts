@@ -30,9 +30,6 @@ export class PrivateObject {
     spValue: number;
     spCount: number;
 
-
-
-
     constructor({
         getValue,
         getCount,
