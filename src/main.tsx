@@ -18,6 +18,9 @@ import {
 createRoot(document.getElementById('root')!).render(
 
       <ProdexProvider>
+          <YearProvider>
+              <MonthProvider>
+                  <DayProvider>
           <ShowPrivateSaleProvider>
               <ShowCoorpSaleProvider>
                   <ShowAllSaleProvider>
@@ -26,13 +29,7 @@ createRoot(document.getElementById('root')!).render(
                   <ShowCoorpCreateSalesProvider>
                       <ShowCoorpCreateRemoveProvider>
             <AuthProvider>
-                <YearProvider>
-                    <MonthProvider>
-                        <DayProvider>
                         <App />
-                        </DayProvider>
-                    </MonthProvider>
-                </YearProvider>
             </AuthProvider>
                       </ShowCoorpCreateRemoveProvider>
                   </ShowCoorpCreateSalesProvider>
@@ -41,6 +38,9 @@ createRoot(document.getElementById('root')!).render(
                   </ShowAllSaleProvider>
               </ShowCoorpSaleProvider>
               </ShowPrivateSaleProvider>
+                  </DayProvider>
+              </MonthProvider>
+          </YearProvider>
       </ProdexProvider>
 
 )

@@ -22,7 +22,6 @@ const CoorpCreateTableComp = ({ data, rows, setRows, extraRows, setExtraRows}: C
         setRows(newRows);
     }, [data, setRows]);
 
-    console.log(extraRows);
 
     const {setInputs } = useProdex();
 

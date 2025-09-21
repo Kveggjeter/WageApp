@@ -46,6 +46,17 @@ class GiveProductCorrectCode extends CoorpNames{
         return finalMap;
     }
 
+    singleCode(s: string) {
+
+            for (const [code, names] of this.lookUp.entries()) {
+                if (names.includes(s)) {
+                    return code;
+                }
+            }
+
+        return "";
+    }
+
 
 }
 

@@ -15,6 +15,6 @@ export function UniqueCoorpAdd(combined: CoorpCreateSaleRowData[]) {
             } else produkt.set(id, 1);
             produkt.set("sum", sumProdukt);
     });
-    console.log(produkt);
+
     return produkt;
 }

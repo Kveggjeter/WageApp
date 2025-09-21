@@ -35,6 +35,7 @@ export class CoorpNames {
     d: string[] = ["Avarn"];
     n: string[] = ["ITP"];
 
+
     b10: string[] = ["Brannforsikring"];
     b10a: string[] = ["Brannavbrudd 1. Risiko"];
     b10b: string[] = ["Maskiner/Løsøre", "Maskiner", "Flytebrygge", "Kai/Brygge"];

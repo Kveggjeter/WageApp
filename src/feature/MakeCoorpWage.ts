@@ -12,7 +12,6 @@ export async function MakeCoorpWage({ tabell, uid }: MainTableProps): Promise<Ma
 
             const commissionRate = commissionData.get(key);
             if (commissionRate) {
-                console.log(key);
                 const rate: number = commissionRate * value;
                 wage.set(key, rate)
             }

@@ -2,23 +2,23 @@ import MainPrivTable from "./MainPrivTable.tsx";
 import {PrivateObject} from "../assets/type/PrivateObject.ts";
 import {UseShowPrivCreateRemove, UseShowPrivCreateSale} from "../contexts/windowContext/privSaleContext.tsx";
 import {UseShowPrivateSale} from "../contexts/windowContext/typeOfDash.tsx";
-
+import {UseMonth, UseYear} from "../contexts/calendar/CalendarContext.tsx";
+import {NumClean} from "../feature/TableUtils.ts";
 
 export function PrivateDash(o: PrivateObject) {
     const { setShowPrivCreateSale } = UseShowPrivCreateSale();
     const { setShowPrivCreateRemove } = UseShowPrivCreateRemove();
     const { showPrivateSale } = UseShowPrivateSale();
+    const { year } = UseYear();
+    const { month } = UseMonth();
 
     if(!showPrivateSale) {return null}
 
-    const numClean = (n: number) => {
-        return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
     return(
         <div className="flex flex-row">
         <div className="flex flex-col self-start">
-            <h2 className="text-2xl w-full pt-4 pb-1 border-b-2 border-grey-200 mb-2">{o.year} {o.month}</h2>
-            <MainPrivTable getValue={o.getValue} getCount={o.getCount} />
+            <h2 className="text-2xl w-full pt-4 pb-1 border-b-2 border-grey-200 mb-2">{year} {month}</h2>
+            <MainPrivTable {...o} />
         </div>
     <div className="flex flex-col ml-auto text-center ">
         <div className="flex flex-col self-center gap-6 mt-7 p-2 font-['Albert_Sans'] text-xl font-light md:max-xl:flex-col md:max-xl:max-w-30 md:max-xl:self-center">
@@ -28,7 +28,7 @@ export function PrivateDash(o: PrivateObject) {
             </div>
             <div className="flex-1 md:max-xl:max-w-30">
                 <h3 id="sgNor">Salgsum Nordea</h3>
-                <h2 className="text-3xl">{numClean(o.totalLiv)} NOK</h2>
+                <h2 className="text-3xl">{NumClean(o.totalLiv)} NOK</h2>
             </div>
         </div>
         <div className="flex gap-2 mt-auto ml-2 mr-4 font-['Albert_Sans'] rounded-lg">
@@ -56,15 +56,15 @@ export function PrivateDash(o: PrivateObject) {
         </div>
         <div className="mb-7 border-b-3 border-gray-200">
             <h3 id="provSkade">Provisjon skade</h3>
-            <h1 className="text-4xl" id="salgSkadeSum">{numClean(~~o.skadeProv)}NOK</h1>
+            <h1 className="text-4xl" id="salgSkadeSum">{NumClean(~~o.skadeProv)}NOK</h1>
         </div>
         <div className="mb-7 border-b-3 border-gray-200">
             <h3 id="provLiv">Provisjon Nordea</h3>
-            <h1 className="text-4xl" id="salgLivSum">{numClean(~~o.livProv)}</h1>
+            <h1 className="text-4xl" id="salgLivSum">{NumClean(~~o.livProv)}</h1>
         </div>
         <div className="mt-auto mb-2 border-b-5 border-black">
             <h3 id="totalProvSum">Total provisjon</h3>
-            <h1 className="text-5xl font-semibold" id="totalProvSalgSum">{numClean(o.totalProv)}NOK</h1>
+            <h1 className="text-5xl font-semibold" id="totalProvSalgSum">{NumClean(o.totalProv)}NOK</h1>
         </div>
     </div>
         </div>

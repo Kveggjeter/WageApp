@@ -49,7 +49,7 @@ export function Login() {
             </div>
         )}
         <div className="flex items-center justify-center w-screen h-screen font-[Verdana] bg-white/70 bg-blend-lighten bg-cover" style={{ backgroundImage: `url(${livboye})` }}>
-            <div className="flex relative item-center flex-col w-116 h-auto rounded bg-white font-['Albert_Sans'] shadow">
+            <div className="flex relative item-center pt-10 flex-col w-116 h-auto rounded bg-white font-['Albert_Sans'] shadow">
                 <img className="w-50 flex self-center" alt="nb" src={nb} />
                 <div className="self-start pb-10 pl-20 w-10/12">
                     <h2 className="text-2xl font-light pt-4 pb-2">Logg inn</h2>

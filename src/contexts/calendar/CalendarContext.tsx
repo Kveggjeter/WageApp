@@ -4,16 +4,25 @@ import {MonthProps} from "../../assets/type/MonthProps.ts";
 import {NorskKalender} from "./NorskKalender.ts";
 import {DayProps} from "../../assets/type/DayProps.ts";
 
-const YearContext = createContext<YearProps | undefined>(undefined);
-const MonthContext = createContext<MonthProps | undefined>(undefined);
-const DayContext = createContext<DayProps | undefined>(undefined);
+const DayContext = createContext<DayProps>({
+    day: new Date().getDate(),
+    setDay: () => {},
+});
 
-const d = new Date();
+const MonthContext = createContext<MonthProps>({
+    month: NorskKalender(new Date().getMonth()),
+    setMonth: () => {},
+});
+
+const YearContext = createContext<YearProps>({
+    year: new Date().getFullYear(),
+    setYear: () => {},
+});
+
+
 
 export function DayProvider ({ children }: { children: React.ReactNode}) {
-    const [day, setDay] = useState<number>();
-    const today = d.getDay();
-    if (day === null || day === undefined) setDay(today);
+    const [day, setDay] = useState<number>(new Date().getDate());
     return (
         <DayContext.Provider value ={{ day, setDay }}>
             {children}
@@ -22,9 +31,7 @@ export function DayProvider ({ children }: { children: React.ReactNode}) {
 }
 
 export function YearProvider ({ children }: { children: React.ReactNode}) {
-    const [year, setYear] = useState<number>();
-    const today = d.getFullYear();
-    if (year === null || year === undefined) setYear(today);
+    const [year, setYear] = useState<number>(new Date().getFullYear());
     return (
         <YearContext.Provider value ={{ year, setYear }}>
             {children}
@@ -34,10 +41,7 @@ export function YearProvider ({ children }: { children: React.ReactNode}) {
 
 
 export function MonthProvider ({ children } : { children: React.ReactNode}) {
-    const [month, setMonth] = useState<string>();
-    const today = d.getMonth();
-    if (month === null || month === undefined)
-        setMonth(NorskKalender(today));
+    const [month, setMonth] = useState<string>(NorskKalender(new Date().getMonth()));
     return (
         <MonthContext.Provider value = {{ month, setMonth}}>
             {children}

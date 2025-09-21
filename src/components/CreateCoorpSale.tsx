@@ -71,14 +71,13 @@ export function CreateCoorpSale({ showCoorpSaleWindow, closeCoorpSale, children 
         const converter = new GiveProductCorrectCode();
         const codeMap = converter.nameAsCodes(combined);
         codeMap.set("amount", res.get("sum") as number)
-        console.log(codeMap);
         const ekteMonth: number = KalenderNorsk(month);
 
         let ekteDay;
-        if (typeof day != "undefined") {
-            if (day < 10) ekteDay = "0" + day;
-        } else ekteDay = day;
+        if (day < 10) ekteDay = "0" + day;
+        else ekteDay = day;
         let realMonth: string = ekteMonth.toString();
+
         if (ekteMonth < 10) realMonth = "0" + realMonth;
         const customerNameWithDate = ekteDay + "." + realMonth + "-" + customerName.charAt(0).toUpperCase() + customerName.slice(1);
 
